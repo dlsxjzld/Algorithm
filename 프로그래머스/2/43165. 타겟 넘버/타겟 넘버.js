@@ -3,18 +3,15 @@ function solution(numbers, target) {
     var answer = 0;
     let idx = 0
     
-    const dfs = function (depth, total,numbers,endOfdepth,target){
-        if (depth >= endOfdepth){
+    const dfs = function (depth, total){
+        if (depth >= numbers.length){
             answer+= total === target ? 1 : 0
             return
         }
-        else{
-            dfs(depth+1,total+numbers[depth],numbers,endOfdepth,target)
-            dfs(depth+1,total-numbers[depth],numbers,endOfdepth,target)
-            }
+            dfs(depth+1,total+numbers[depth])
+            dfs(depth+1,total-numbers[depth])
         }
-    dfs(idx,0,numbers,numbers.length,target)
-    // console.log(answer)
+    dfs(idx,0)
     
     return answer;
 }
