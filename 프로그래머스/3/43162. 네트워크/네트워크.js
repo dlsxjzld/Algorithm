@@ -7,12 +7,11 @@ function solution(n, computers) {
         stack.push(start)
         while(stack.length>0){
             const computer = stack.pop()
-            computers[computer]
-                .forEach((v,i)=> {
-                if (i!==computer && v==1 && visited[i] === false){
+            
+            computers[computer].forEach((v,i)=> {if (i!==computer && v==1 && visited[i] === false){
                 visited[i] = true
                 stack.push(i)
-                }})
+            }})
         }
         return 1
     }
