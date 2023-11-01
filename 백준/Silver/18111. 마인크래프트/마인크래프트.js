@@ -26,13 +26,14 @@ for (let height = 0; height <= 256; height += 1) {
             }
         }
     }
-
-    if (removeBlock + b >= addBlock) {
-        const totalTime = removeBlock * 2 + addBlock;
-        if (resultTime >= totalTime) {
-            resultTime = totalTime;
-            resultHeight = height;
-        }
+    if(removeBlock+b < addBlock){
+        break
     }
+    const totalTime = removeBlock * 2 + addBlock;
+    if (resultTime >= totalTime) {
+        resultTime = totalTime;
+        resultHeight = height;
+    }
+    
 }
 console.log(resultTime, resultHeight);
