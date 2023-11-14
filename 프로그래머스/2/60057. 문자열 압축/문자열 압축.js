@@ -1,6 +1,5 @@
 function solution(s) {
     var answer = Number.MAX_SAFE_INTEGER;
-    let charLength = 0
     
     for(let charLength = 1; charLength<=s.length;charLength++){
         let tmpString = ''
@@ -18,6 +17,7 @@ function solution(s) {
                 cnt = 1
             }
         }
+        // 압축한 문자열의 길이가 짧다면 정답 갱신
         answer = tmpString.length < answer ? tmpString.length : answer
 
         
