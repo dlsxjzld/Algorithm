@@ -1,41 +1,42 @@
 const input = require("fs")
-    .readFileSync("/dev/stdin")
-    .toString()
-    .trim()
-    .split("\n");
+  .readFileSync("/dev/stdin")
+  .toString()
+  .trim()
+  .split("\n");
 
-let T = input.slice(0, 1);
+input.shift();
 
-for (let testCase = 0; testCase < T; testCase += 1) {
-    const p = input[testCase * 3 + 1].split("");
+const Delete = (arr, isR) => {
+  if (isR) {
+    arr.pop();
+    return arr;
+  }
 
-    const arr = input[testCase * 3 + 3].slice(1, -1).split(",");
-    if (arr[0] === "") arr.shift();
+  if (!isR) {
+    arr.shift();
+    return arr;
+  }
+};
 
-    let errorFlag = false;
-    let isReverse = false;
+for (let i = 0; i < input.length; i += 3) {
+  const command = input[i].split("");
+  let array = JSON.parse(input[i + 2]);
+  let isReverse = false;
+  let isError = false;
 
-    for (let idx = 0; idx < p.length; idx += 1) {
-        const action = p[idx];
-        if (action === "R") {
-            isReverse = !isReverse;
-        } else if (action === "D") {
-            if (arr.length === 0) {
-                errorFlag = true;
-                break;
-            }
-            if (isReverse) {
-                arr.pop();
-            } else {
-                arr.shift();
-            }
-        }
+  for (let j = 0; j < command.length; j++) {
+    if (command[j] === "R") {
+      isReverse = !isReverse;
     }
-    console.log(
-        errorFlag
-            ? "error"
-            : isReverse
-            ? ('['+arr.map(Number).reverse().join(',')+']').trim()
-            : ('['+arr.map(Number).join(',')+']').trim()
-    );
+    if (command[j] === "D") {
+      if (array.length === 0) {
+        isError = true;
+      }
+      array = Delete(array, isReverse);
+    }
+  }
+
+  console.log(
+    isError ? "error" : JSON.stringify(isReverse ? array.reverse() : array)
+  );
 }
