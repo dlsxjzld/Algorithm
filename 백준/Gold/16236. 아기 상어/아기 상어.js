@@ -39,25 +39,27 @@ let time = 0; // 잡아먹을 수 있는 시간
 
 let cnt = 0; // 잡아먹은 물고기 수
 
-while (true) {
-    graph.forEach((row, ridx) => {
-        row.forEach((val, cidx) => {
-            if (val === 9) {
-                [x, y] = [ridx, cidx];
-            }
-        });
+// 초기 x,y 값 찾기
+graph.forEach((row, ridx) => {
+    row.forEach((val, cidx) => {
+        if (val === 9) {
+            [x, y] = [ridx, cidx];
+        }
     });
+});
 
-    const newFish = bfs(x, y, graph, sharkSize);
-    if (newFish === null) break;
+while (true) {
+    const newFish = bfs(x, y, graph, sharkSize); // 먹을 물고기 찾기
+    if (newFish === null) break; // 없으면 break
 
-    const [nx, ny, distance] = newFish;
+    const [nx, ny, distance] = newFish; // 있으면 상어의 위치와 time 값 갱신
 
     time += distance;
     graph[x][y] = 0;
     graph[nx][ny] = 9;
-    // [x, y] = [nx, ny];
+    [x, y] = [nx, ny];
 
+    // 상어 크기 갱신
     cnt += 1;
     if (cnt === sharkSize) {
         sharkSize += 1;
@@ -73,14 +75,17 @@ function bfs(x, y, graph, sharkSize) {
     const dx = [0, 0, 1, -1];
     const dy = [1, -1, 0, 0];
 
+    // 거리만 계산할 그래프
     const tmpGraph = Array.from({ length: n }, () =>
         Array.from({ length: n }, () => 0)
     );
+    // 방문했는지 확인할 visited
     const tmpVisited = Array.from({ length: n }, () =>
         Array.from({ length: n }, () => false)
     );
     tmpVisited[x][y] = true;
-    const tmpFish = [];
+
+    const tmpFish = []; // 먹을 수 있는 고기들의 위치와 거리
 
     while (queue.size() > 0) {
         const [x, y] = queue.dequeue();
@@ -91,9 +96,12 @@ function bfs(x, y, graph, sharkSize) {
             if (nx < 0 || ny < 0 || nx >= n || ny >= n) continue;
 
             if (graph[nx][ny] <= sharkSize && tmpVisited[nx][ny] === false) {
+                // 이동 가능하면 상어 움직이기
                 queue.enqueue([nx, ny]);
                 tmpGraph[nx][ny] = tmpGraph[x][y] + 1;
                 tmpVisited[nx][ny] = true;
+
+                // 먹을 수 있는 고기들의 위치와 거리 담기
                 if (graph[nx][ny] < sharkSize && graph[nx][ny] !== 0) {
                     tmpFish.push([nx, ny, tmpGraph[nx][ny]]);
                 }
@@ -101,9 +109,14 @@ function bfs(x, y, graph, sharkSize) {
         }
     }
     if (tmpFish.length === 0) {
+        // 먹을 고기가 없는 경우도 생각해줘야 함.
+        // 없으면 null 을 return 하도록 함
         return null;
     }
 
+    // 우선순위에 따라 정렬, 거리 -> 가장 위 -> 가장 왼쪽 순으로 정렬
+    // 오름차순으로 정렬하려면 a<b에서 -1 을 return
+    // 내림차순으로 정렬하려면 a<b에서 1 을 return
     tmpFish.sort((a, b) => {
         if (a[2] < b[2]) {
             return -1;
@@ -120,5 +133,5 @@ function bfs(x, y, graph, sharkSize) {
         }
     });
 
-    return tmpFish[0];
+    return tmpFish[0]; // 먹을 수 있는 물고기들 중에 가장 가까운 물고기 return
 }
