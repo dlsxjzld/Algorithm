@@ -29,4 +29,4 @@ if (n >= 3) {
 
 
 
-console.log(Math.max(...dp));
+console.log(dp[n]);
