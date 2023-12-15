@@ -11,7 +11,6 @@ let answer = 0;
 // 바뀐 보드의 사탕 갯수 확인하기
 function check(board) {
   // 행 확인
-
   for (let x = 0; x < n; x++) {
     let tmp = 1;
     for (let y = 0; y < n - 1; y++) {
@@ -24,6 +23,7 @@ function check(board) {
     }
   }
 
+  // 열 확인
   for (let y = 0; y < n; y++) {
     let tmp = 1;
     for (let x = 0; x < n - 1; x++) {
@@ -37,6 +37,7 @@ function check(board) {
   }
 }
 
+// 오른쪽과 아래만 바꾸면 되므로 방향은 동,남 2가지
 const dx = [0, 1]; // 동 남
 const dy = [1, 0]; // 동 남
 
@@ -47,15 +48,11 @@ for (let x = 0; x < n; x++) {
       const ny = y + dy[idx];
 
       if (nx >= n || ny >= n) continue; // board 안에만 접근하도록 예외 처리
-      let tempCandy = board[x][y];
-      board[x][y] = board[nx][ny];
-      board[nx][ny] = tempCandy;
-      // 사탕 바꾸기
+      if (board[nx][ny] === board[x][y]) continue;
+
+      [board[nx][ny], board[x][y]] = [board[x][y], board[nx][ny]]; // 사탕 바꾸기
       check(board); // 바뀐 사탕으로 행과 열 확인하기
-      tempCandy = board[x][y];
-      board[x][y] = board[nx][ny];
-      board[nx][ny] = tempCandy;
-      // 다시 사탕 바꾸기 (원본 보드 유지)
+      [board[nx][ny], board[x][y]] = [board[x][y], board[nx][ny]]; // 다시 사탕 바꾸기 (원본 보드 유지)
     }
   }
 }
