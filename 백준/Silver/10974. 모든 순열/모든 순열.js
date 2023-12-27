@@ -24,7 +24,9 @@ const dfs = (array) => {
 }
 
 for (let idx = 1; idx < n + 1; idx++) {
-  visited[idx] = true
-  dfs([idx])
-  visited[idx] = false
+  if (!visited[idx]) {
+    visited[idx] = true
+    dfs([idx])
+    visited[idx] = false
+  }
 }
