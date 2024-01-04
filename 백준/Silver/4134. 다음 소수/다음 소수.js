@@ -7,6 +7,9 @@ const input = require("fs")
 const tc = Number(input[0])
 
 function prime(num) {
+  if (num <= 1) {
+    return false
+  }
   for (let i = 2; i < Math.floor(Math.sqrt(num)) + 1; i++) {
     if (num % i === 0) {
       return false
@@ -17,10 +20,6 @@ function prime(num) {
 
 for (let t = 1; t < tc + 1; t++) {
   const number = Number(input[t])
-  if (number <= 1) {
-    console.log(2)
-    continue
-  }
   let check = number
   while (prime(check) === false) {
     check++
