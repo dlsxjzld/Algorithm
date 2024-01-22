@@ -4,8 +4,7 @@ const input = require("fs")
   .trim()
   .split("\n")
 
-// 341
-const MAX = 5000000
+const MAX = 1003002
 const n = Number(input[0])
 const check = Array.from({ length: MAX }, () => false)
 
