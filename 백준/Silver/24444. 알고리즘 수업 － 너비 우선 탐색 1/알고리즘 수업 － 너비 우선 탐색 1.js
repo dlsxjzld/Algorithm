@@ -4,6 +4,23 @@ const input = require("fs")
   .trim()
   .split("\n")
 
+  class Que {
+    q = [];
+    h = 0;
+    t = 0;
+    enque(v) {
+        this.q[this.t++] = v;
+    }
+    deque() {
+        const v = this.q[this.h];
+        delete this.q[this.h++];
+        return v;
+    }
+    size() {
+        return this.t - this.h;
+    }
+}
+
 const [n, m, r] = input[0].split(" ").map(Number)
 const edges = input.slice(1,1+m).map(row=>row.split(' ').map(Number))
 
@@ -22,17 +39,18 @@ for(let i=1;i<n+1;i++){
 }
 
 const bfs = (start) => {
-  const queue = [start]
+  const queue = new Que()
+  queue.enque(start)
   visited[start] = true
   
-  while(queue.length>0){
-    const cur = queue.shift()
+  while(queue.size()>0){
+    const cur = queue.deque()
 
     for (let next of graph[cur]) {
       if(!visited[next]){
         cnt +=1
         visited[next] = true
-        queue.push(next)
+        queue.enque(next)
         answer[next] = cnt
       }
     }
