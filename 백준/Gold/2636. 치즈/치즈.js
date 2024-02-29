@@ -1,97 +1,65 @@
-class Queue {
-  constructor() {
-    this.dat = [];
-    this.head = 0;
-    this.tail = 0;
-  }
-
-  push(item) {
-    this.dat[this.tail++] = item;
-  }
-
-  pop() {
-    this.head++;
-  }
-
-  front() {
-    return this.dat[this.head];
-  }
-
-  rear() {
-    return this.dat[this.tail - 1];
-  }
-
-  isEmpty() {
-    return this.head === this.tail;
-  }
-}
-
-const filePath = process.platform === 'linux' ? '/dev/stdin' : './input.txt';
-const input = require('fs')
-  .readFileSync(filePath)
+const input = require("fs")
+  .readFileSync("/dev/stdin")
   .toString()
   .trim()
-  .split('\n');
+  .split("\n")
 
-const [N, M] = input[0].split(' ').map(Number);
-const board = Array.from({ length: N }, () => Array(M));
-for (let i = 1; i <= N; i++) {
-  const temp = input[i].split(' ').map(Number);
-  for (let j = 0; j < M; j++) {
-    board[i - 1][j] = temp[j];
-  }
-}
-const dir = [
-  [-1, 0],
-  [1, 0],
-  [0, -1],
+const [n, m] = input[0].split(" ").map(Number)
+const graph = input.slice(1).map((row) => row.split(" ").map(Number))
+
+const move = [
   [0, 1],
-];
-let time = 0;
-let cnt = 0;
+  [0, -1],
+  [1, 0],
+  [-1, 0],
+]
 
-function bfs() {
-  const queue = new Queue();
-  const visited = Array.from({ length: N }, () => Array(M).fill(false));
-  queue.push([0, 0]);
-  visited[0][0] = true;
-  let nodes = [];
+const bfs = () => {
+  const queue = [[0, 0]]
+  const visited = Array.from({ length: n }, () =>
+    Array.from({ length: m }, () => false),
+  )
 
-  while (!queue.isEmpty()) {
-    const [x, y] = queue.front();
-    queue.pop();
+  visited[0][0] = true
 
-    for (let k = 0; k < 4; k++) {
-      const nx = x + dir[k][0];
-      const ny = y + dir[k][1];
+  const del = []
 
-      if (nx < 0 || ny < 0 || nx >= N || ny >= M) continue;
-      if (visited[nx][ny]) continue;
-      if (board[nx][ny] === 1) {
-        nodes = [...nodes, [nx, ny]]; // push 메서드 대신
-        visited[nx][ny] = true; // 배열에 중복되는 좌표가 들어가는 것을 방지
-        continue;
+
+  while (queue.length > 0) {
+    const [x, y] = queue.shift()
+    for (let i = 0; i < 4; i++) {
+      const [nx, ny] = [x + move[i][0], y + move[i][1]]
+      if (nx >= 0 && ny >= 0 && nx < n && ny < m && !visited[nx][ny]) {
+        if (graph[nx][ny] === 1) {
+          del.push([nx, ny])
+          visited[nx][ny] = true
+          continue
+        }
+        queue.push([nx,ny])
+        visited[nx][ny] = true
       }
-      queue.push([nx, ny]);
-      visited[nx][ny] = true;
     }
   }
 
-  for (const [x, y] of nodes) {
-    board[x][y] = 0;
+  for (let [x, y] of del) {
+    graph[x][y] = 0
+  }
+  if (del.length === 0) {
+    return true
   }
 
-  if (!nodes.length) return true;
-
-  cnt = nodes.length;
-  return false;
+  num = del.length
+  return false
 }
+
+let time = 0
+let num = 0
 
 while (true) {
-  if (bfs()) break;
-
-  // 제거되는 치즈가 존재할 경우에만 시간을 증가시킨다.
-  time += 1;
+  if (bfs()) {
+    console.log(time)
+    console.log(num)
+    break
+  }
+  time += 1
 }
-
-console.log(time, cnt);
