@@ -1,8 +1,25 @@
-let fs = require('fs');
-let input = fs.readFileSync('/dev/stdin').toString().trim().split('\n');
-const N = Number(input.shift());
-let list = input.shift().split(' ').map(Number);
-let people = [];
-for(let i = N - 1; i>=0;i--)
-    people = people.slice(0,list[i]).concat([i+1, ...people.slice(list[i])]);
-console.log(people.join(' ').trim());
+const input = require("fs")
+  .readFileSync("/dev/stdin")
+  .toString()
+  .trim()
+  .split("\n")
+const n = Number(input[0])
+
+const memory = input[1].split(" ").map(Number).reverse()
+
+let answer = []
+for (let i = 0; i < n; i++) {
+  const x = n - i
+  if (x === n) {
+    answer.push( x.toString())
+  } else {
+    if (memory[i] > 0) {
+      const before = answer.slice(0, memory[i]) 
+      const after = answer.slice(memory[i])
+      answer = [...before, x.toString() ,...after]
+    } else {
+      answer.unshift(x.toString())
+    }
+  }
+}
+console.log(answer.join(' '))
