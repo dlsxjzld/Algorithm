@@ -4,6 +4,26 @@ const input = require("fs")
   .trim()
   .split("\n")
 
+class Queue {
+  constructor() {
+    this.queue = []
+    this.front = 0
+    this.rear = 0
+  }
+  enqueue(value) {
+    this.queue[this.rear++] = value
+  }
+  dequeue() {
+    const value = this.queue[this.front]
+    delete this.queue[this.front]
+    this.front += 1
+    return value
+  }
+  size() {
+    return this.rear - this.front
+  }
+}
+
   const [n,m] = input[0].split(' ').map(Number)
   const graph = Array.from({length:n+1},()=>[])
   const visited = Array.from({length:n+1},()=>0)
@@ -19,16 +39,17 @@ const input = require("fs")
   
 
   const bfs = (start)=>{
-    const queue = [[start,0]]
+    const queue = new Queue() 
+    queue.enqueue([start,0])
     visited[start] = 0
     
-    while(queue.length>0){
-      const [cur,distance] = queue.shift()
+    while(queue.size()>0){
+      const [cur,distance] = queue.dequeue()
 
       for(let nextNode of graph[cur]){
         if(!visited[nextNode] && nextNode !== start){
           visited[nextNode] = distance+1
-          queue.push([nextNode,distance+1])
+          queue.enqueue([nextNode,distance+1])
         }
       }
     }
