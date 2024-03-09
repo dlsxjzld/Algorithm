@@ -1,73 +1,103 @@
-const fs = require("fs");
-const input = fs
+const input = require("fs")
   .readFileSync("/dev/stdin")
   .toString()
   .trim()
-  .split(" ")
-  .map(Number);
-let visited = Array.from({ length: 201 }, () =>
-  Array.from({ length: 201 }, () => Array(201).fill(false))
-);
-let result = [];
+  .split("\n")
 
-let [A, B, C] = input;
-
-let queue = [];
-queue.push([0, 0, C]);
-
-while (queue.length !== 0) {
-  let [x, y, z] = queue.shift();
-
-  if (!visited[x][y][z]) {
-    visited[x][y][z] = true;
-    if (x === 0) {
-      result.push(z);
-    }
-
-    // x -> y
-    if (x + y > B) {
-      queue.push([x + y - B, B, z]);
-    } else {
-      queue.push([0, x + y, z]);
-    }
-
-    // x -> z
-    if (x + z > C) {
-      queue.push([x + z - C, y, C]);
-    } else {
-      queue.push([0, y, x + z]);
-    }
-
-    // y -> x
-    if (x + y > A) {
-      queue.push([A, x + y - A, z]);
-    } else {
-      queue.push([x + y, 0, z]);
-    }
-
-    // y -> z
-    if (y + z > C) {
-      queue.push([x, y + z - C, C]);
-    } else {
-      queue.push([x, 0, y + z]);
-    }
-
-    // z -> x
-    if (x + z > A) {
-      queue.push([A, y, x + z - A]);
-    } else {
-      queue.push([x + z, y, 0]);
-    }
-
-    // z -> y
-    if (y + z > B) {
-      queue.push([x, B, y + z - B]);
-    } else {
-      queue.push([x, y + z, 0]);
-    }
+class Queue {
+  constructor() {
+    this.queue = []
+    this.front = 0
+    this.rear = 0
+  }
+  enqueue(value) {
+    this.queue[this.rear++] = value
+  }
+  dequeue() {
+    const value = this.queue[this.front]
+    delete this.queue[this.front]
+    this.front += 1
+    return value
+  }
+  size() {
+    return this.rear - this.front
   }
 }
 
-result.sort((a, b) => a - b);
+const [a, b, c] = input[0].split(" ").map(Number)
+const waterTank = [0, 0, c]
 
-console.log(result.join(" "));
+const answer = new Set([c])
+let visited = Array.from({ length: 201 }, () =>
+  Array.from({ length: 201 }, () => Array(201).fill(false)),
+)
+
+const bfs = () => {
+  const queue = [[0, 0, c]]
+
+  while (queue.length > 0) {
+    const [x, y, z] = queue.shift()
+
+    if (!visited[x][y][z]) {
+      visited[x][y][z] = true
+      if (x === 0) {
+        answer.add(z)
+      }
+
+      // c -> b
+      if (y < b && z >= b - y) {
+        queue.push([x, b, z - (b - y)])
+      }
+      if (y < b && z < b - y) {
+        queue.push([x, y + z, 0])
+      }
+      
+      // c -> a
+      if (x < a && z >= a - x) {
+        queue.push([a, y, z - (a - x)])
+      }
+      if (x < a && z < a - x) {
+        queue.push([x+z, y, 0])
+      }
+
+      // b -> a
+      if (x < a && y >= a - x) {
+        queue.push([a, y - (a - x), z])
+      }
+      if (x < a && y < a - x) {
+        queue.push([x + y, 0, z])
+      }
+      // b -> c
+      if (z < c && y >= c - z) {
+        queue.push([x, y - (c - z), c])
+      }
+      if (z < c && y < c - z) {
+        queue.push([x, 0, z + y])
+      }
+      // a -> b
+      if (y < b && x >= b - y) {
+        queue.push([x - (b - y), b, z])
+      }
+      if (y < b && x < b - y) {
+        queue.push([0, y + x, z])
+      }
+      // a -> c
+      if (z < c && x >= c - z) {
+        queue.push([x - (c - z), y, c])
+      }
+      if (z < c && x < c - z) {
+        queue.push([0, y, z + x])
+      }
+    }
+  }
+}
+// c -> b
+// c -> a
+// b -> a
+// b -> c
+// a -> b
+// a -> c
+bfs()
+
+const result = Array.from(answer).sort((a, b) => a - b)
+console.log(result.join(' '))
