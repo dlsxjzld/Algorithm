@@ -4,7 +4,16 @@ const input = require("fs")
   .trim()
   .split("\n")
 
-const l = Number(input[0])
-const letter = input[1].split('')
+const N = Number(input[0])
+const letter = input[1]
 
-console.log(letter.map((val,idx)=>((val.charCodeAt()-96) * (31 ** idx) )).reduce((prev,cur)=>prev+cur,0) % 1234567891) 
+let hash = 0;
+let r = 1;
+for (let i = 0; i < N; i++) {
+  hash += (letter.charCodeAt(i) - 96) * r
+  hash %= 1234567891;
+  r *= 31
+  r %= 1234567891;
+}
+
+console.log(hash)
