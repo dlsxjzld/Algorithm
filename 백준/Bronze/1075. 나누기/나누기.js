@@ -1,20 +1,27 @@
-const fs = require("fs");
-const filePath = process.platform === "linux" ? "/dev/stdin" : "./input.txt";
-let input = fs.readFileSync(filePath).toString().split("\n");
- 
-input = input.map((item) => +item);
-solution(input[0], input[1]);
- 
-function solution(n, f, answer = 0) {
-  let number = ((n/100) | 0) * 100;
- 
-  while (true) {
-    if (number % f == 0) {
-      answer = number;
-      break;
-    } else {
-      number += 1;
+const input = require("fs")
+  .readFileSync("/dev/stdin")
+  .toString()
+  .trim()
+  .split("\n")
+
+  const n = input[0]
+  const f = Number(input[1])
+
+  let start = n.split('')
+  let end = n.split('')
+  start[start.length-1] = '0'
+  start[start.length-2] = '0'
+  start = Number(start.join(''))
+  end[end.length-1] = '9'
+  end[end.length-2] = '9'
+  end = Number(end.join(''))
+
+  let answer = ''
+  while(true){
+    if(start % f === 0){
+      answer = start.toString().slice(start.toString().length-2)
+      break
     }
+    start +=1
   }
-  console.log(("" + answer).slice(-2));
-}
+  console.log(answer)
