@@ -16,7 +16,7 @@ const input = require("fs")
 
     while(word.length>0){
       const letter = word.pop()
-      if(stack.length && stack.at(-1) === letter){
+      if(stack.length && stack[stack.length-1] === letter){
         stack.pop()
       }else{
         stack.push(letter)
