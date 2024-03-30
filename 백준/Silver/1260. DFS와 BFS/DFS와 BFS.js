@@ -9,13 +9,15 @@ const graph = Array.from({ length: n + 1 }, () => [])
 const visitedDfs = Array.from({ length: n + 1 }, () => false)
 const visitedBfs = Array.from({ length: n + 1 }, () => false)
 
-input.slice(1).forEach((row) => {
-  const [x, y] = row.split(" ").map(Number)
+for (let i = 1; i < input.length; i++) {
+  const [x, y] = input[i].split(" ").map(Number)
   graph[x].push(y)
   graph[y].push(x)
-})
+}
 
-graph.forEach((row) => row.sort((a, b) => a - b))
+for (let i = 0; i < graph.length; i++) {
+  graph[i].sort((a, b) => a - b)
+}
 
 const dfsAnswer = [v]
 const bfsAnswer = [v]
