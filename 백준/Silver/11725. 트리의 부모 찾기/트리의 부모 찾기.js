@@ -1,37 +1,34 @@
-const input = require("fs")
-  .readFileSync("/dev/stdin")
-  .toString()
-  .trim()
-  .split("\n")
+const [N, ...edges] = require('fs').readFileSync('/dev/stdin').toString().trim().split('\n');
 
+const graph = Array.from({ length: +N + 1 }).map(() => []);
+const checked = Array.from({ length: +N + 1 }).fill(false);
+const parentNodes = Array.from({ length: +N + 1 }).fill(null);
 
-  const n = Number(input[0])
-  const graph = Array.from({length:n+1},()=>[])
-  const visited=Array.from({length:n+1},()=>false)
-  const answer = Array.from({length:n+1},()=> -1)
+edges.forEach(edge => {
+  const [start, end] = edge.split(' ');
 
-  
+  graph[start].push(+end);
+  graph[end].push(+start);
+});
 
-  input.slice(1).forEach((row)=>{
-    const [x,y] = row.split(' ').map(Number)
-    graph[x].push(y)
-    graph[y].push(x)
-  })
+const dfsSearchForParent = vertex => {
+  if (checked[vertex]) return;
 
-  const dfs = (start)=>{
-    visited[start] = true
+  checked[vertex] = true;
 
-    for(let next of graph[start]){
-      if(!visited[next]){
-        visited[next] = true
-        answer[next] = start
-        dfs(next)
-      }
-    }
-  }
+  graph[vertex].forEach(child => {
+    if (!checked[child]) parentNodes[child] = vertex;
 
-  dfs(1)
+    dfsSearchForParent(child);
+  });
+};
 
-  console.log(answer.slice(2).join('\n'))
+dfsSearchForParent(1);
 
+let answer = '';
 
+for (let i = 2; i < parentNodes.length; i++) {
+  answer += parentNodes[i] + '\n';
+}
+
+console.log(answer);
