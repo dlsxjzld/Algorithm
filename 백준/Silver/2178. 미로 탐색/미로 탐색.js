@@ -43,11 +43,11 @@ const bfs = () => {
     for (let i = 0; i < 4; i++) {
       const [nx, ny] = [x + move[i][0], y + move[i][1]]
 
-      if (nx < 0 || ny < 0 || nx >= n || ny >= m || graph[nx][ny] !== 1) {
-        continue
+      if (nx >= 0 && ny >= 0 && nx < n && ny < m && graph[nx][ny] === 1) {
+
+        graph[nx][ny] = graph[x][y] + 1
+        queue.enqueue([nx, ny])
       }
-      graph[nx][ny] = graph[x][y] + 1
-      queue.enqueue([nx, ny])
     }
   }
 }
