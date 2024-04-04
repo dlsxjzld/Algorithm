@@ -1,14 +1,10 @@
 const input = require("fs")
-    .readFileSync("/dev/stdin")
-    .toString()
-    .trim()
-    .split("\n");
+  .readFileSync("/dev/stdin")
+  .toString()
+  .trim()
+  .split("\n")
 
-const [m, n] = input[0].split(" ").map(Number);
-const graph = input.slice(1, n + 1).map((row) => row.split(" ").map(Number));
-let day = 0;
-
-class Queue {
+  class Queue {
     constructor() {
         this.queue = [];
         this.front = 0;
@@ -26,43 +22,50 @@ class Queue {
     size() {
         return this.rear - this.front;
     }
+  }
+const [m, n] = input[0].split(" ").map(Number)
+const graph = input.slice(1).map((row) => row.split(" ").map(Number))
+
+const startPosition = new Queue()
+graph.forEach((row, ridx) =>
+  row.forEach((val, cidx) => {
+    if (val === 1) {
+      startPosition.enqueue([ridx, cidx])
+    }
+  }),
+)
+
+let day = 0
+
+
+
+const bfs = (queue) => {
+  const move = [
+    [0, 1],
+    [0, -1],
+    [1, 0],
+    [-1, 0],
+  ]
+
+  while (queue.size() > 0) {
+    const [x, y] = queue.dequeue()
+    for (let i = 0; i < 4; i++) {
+      const [nx, ny] = [x + move[i][0], y + move[i][1]]
+      if (nx < 0 || ny < 0 || nx >= n || ny >= m || graph[nx][ny] !== 0) {
+        continue
+      }
+      graph[nx][ny] = graph[x][y] + 1
+      queue.enqueue([nx,ny])
+    }
+  }
 }
 
-// 익은 토마토 위치 고르기
-const starts = new Queue()
-graph.forEach((row, ridx) => {
-    row.forEach((tomato, cidx) => {
-        if (tomato === 1) {
-            starts.enqueue([ridx, cidx]);
-        }
-    });
-});
+bfs(startPosition)
+const isAlreadyDone = graph.some((row) => row.some((value) => value === 0))
 
-// bfs
-const dx = [0, 0, 1, -1]; // 동서남북
-const dy = [1, -1, 0, 0];
-while (starts.size() > 0) {
-    const [x, y] = starts.dequeue();
-    for (let idx = 0; idx < 4; idx++) {
-        const nx = x + dx[idx];
-        const ny = y + dy[idx];
-
-        if (nx < 0 || ny < 0 || nx >= n || ny >= m) {
-            continue;
-        }
-        if (graph[nx][ny] === 0) {
-            graph[nx][ny] = graph[x][y] + 1;
-            starts.enqueue([nx, ny]);
-        }
-    }
+if (isAlreadyDone) {
+  console.log(-1)
+} else {
+  day = Math.max(...graph.flatMap((row)=>Math.max(...row)))
+  console.log(day === 0 ? 0 : day-1)
 }
-
-graph.forEach((row) => (day = Math.max(day, ...row)));
-
-graph.forEach((row) => {
-    if (row.some((tomato) => tomato === 0)) {
-        day = -1;
-    }
-});
-
-console.log(day !== -1 ? day - 1 : day);
