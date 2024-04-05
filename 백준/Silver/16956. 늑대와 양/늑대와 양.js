@@ -21,11 +21,9 @@ const move = [
   [-1, 0],
 ] // 동서남북
 
-let wolf = 0
 for (let i = 0; i < r; i++) {
   for (let j = 0; j < c; j++) {
     if (graph[i][j] === "W") {
-      wolf += 1
       wolfPosition.push([i, j])
       for (let k = 0; k < 4; k++) {
         const [nx, ny] = [i + move[k][0], j + move[k][1]]
@@ -39,9 +37,9 @@ for (let i = 0; i < r; i++) {
   }
 }
 
-const bfs = (_wolfPosition, _graph) => {
+const bfs = (_wolfPosition) => {
   const queue = [..._wolfPosition]
-  const new_graph = _graph.map((row) => row.map((val) => val))
+
   let index = 0
 
   while (index < queue.length) {
@@ -55,14 +53,14 @@ const bfs = (_wolfPosition, _graph) => {
         ny >= 0 &&
         nx < r &&
         ny < c &&
-        new_graph[nx][ny] !== "D" &&
-        new_graph[nx][ny] !== "W"
+        graph[nx][ny] !== "D" &&
+        graph[nx][ny] !== "W"
       ) {
-        if (new_graph[nx][ny] === "S") {
+        if (graph[nx][ny] === "S") {
           return 0
         }
         queue.push([nx, ny])
-        new_graph[nx][ny] = "W"
+        graph[nx][ny] = "W"
       }
     }
   }
@@ -70,7 +68,7 @@ const bfs = (_wolfPosition, _graph) => {
   return 1
 }
 
-const answer = bfs(wolfPosition, graph)
+const answer = bfs(wolfPosition)
 console.log(answer)
 if (answer) {
   console.log(graph.map((row) => row.join("")).join("\n"))
