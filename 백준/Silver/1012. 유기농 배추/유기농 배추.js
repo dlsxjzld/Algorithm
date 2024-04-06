@@ -4,55 +4,55 @@ const input = require("fs")
   .trim()
   .split("\n")
 
-const T = Number(input.shift())
+const T = Number(input[0])
+let tIndex = 1
 
-const inputTestcase = input.map((row) => row.split(" ").map(Number))
-
-const dx = [0, 0, 1, -1]
-const dy = [1, -1, 0, 0]
-const dfs = (x, y, graph) => {
+const move = [
+  [0, 1],
+  [0, -1],
+  [1, 0],
+  [-1, 0],
+]
+const dfs = (x, y, _graph) => {
   for (let i = 0; i < 4; i++) {
-    const nx = x + dx[i]
-    const ny = y + dy[i]
+    const [nx, ny] = [x + move[i][0], y + move[i][1]]
     if (
       nx < 0 ||
       ny < 0 ||
-      nx >= graph.length ||
-      ny >= graph[0].length ||
-      graph[nx][ny] === 0
-    )
+      nx >= _graph.length ||
+      ny >= _graph[0].length ||
+      _graph[nx][ny] === 0
+    ) {
       continue
-    if (graph[nx][ny] === 1) {
-      graph[nx][ny] = 0
-      dfs(nx, ny, graph)
     }
+    _graph[nx][ny] = 0
+    dfs(nx, ny, _graph)
   }
 }
-const answer = []
 
-for (let i = 0; i < T; i++) {
-  const [M, N, K] = inputTestcase.shift()
-  
-  const graph = Array.from({ length: M }, () =>
-    Array.from({ length: N }, () => 0),
+for (let tc = 0; tc < T; tc++) {
+  const [m, n, k] = input[tIndex].split(" ").map(Number)
+  tIndex += 1
+
+  const graph = Array.from({ length: m }, () =>
+    Array.from({ length: n }, () => 0),
   )
 
-  let cnt = 0
-  for (let j = 0; j < K; j++) {
-    const [x, y] = inputTestcase.shift()
+  for (let i = tIndex; i < k + tIndex; i++) {
+    const [x, y] = input[i].split(" ").map(Number)
     graph[x][y] = 1
   }
+  tIndex += k
 
-  for (let r = 0; r < M; r++) {
-    for (let c = 0; c < N; c++) {
-      if (graph[r][c] === 1) {
-        graph[r][c] = 0
-        dfs(r, c, graph)
-        cnt += 1
+  let answer = 0
+  for (let i = 0; i < m; i++) {
+    for (let j = 0; j < n; j++) {
+      if (graph[i][j] === 1) {
+        graph[i][j] = 0
+        dfs(i, j, graph)
+        answer += 1
       }
     }
   }
-  answer.push(cnt)
+  console.log(answer)
 }
-
-answer.forEach((val) => console.log(val))
