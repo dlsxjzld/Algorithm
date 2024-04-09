@@ -14,20 +14,27 @@ for (let i = 1; i < 1 + m; i++) {
   graph[v].push(u)
 }
 
-const dfs = (start) => {
-  if (visited[start]) return 0
+const bfs = (start) => {
+  if(visited[start]) return 0
   visited[start] = true
+  const queue = [start]
 
-  for (let next of graph[start]) {
-    if (!visited[next]) {
-      dfs(next)
+  while (queue.length > 0) {
+    const curr = queue.shift()
+    for (let next of graph[curr]) {
+      if (!visited[next]) {
+        visited[next] = true
+        queue.push(next)
+      }
     }
   }
+
   return 1
 }
 let answer = 0
 for (let i = 1; i < n + 1; i++) {
-  answer += dfs(i)
+
+  answer += bfs(i)
 }
 
 console.log(answer)
