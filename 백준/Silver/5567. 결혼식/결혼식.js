@@ -18,10 +18,10 @@ let cnt = 0
 function bfs(start){
   const queue = [[start,0]]
   visited[start] = true
-
-  while(queue.length>0){
-    const [cur,depth] = queue.shift()
-    
+  let index = 0
+  
+  while(queue.length>index){
+    const [cur,depth] = queue[index++]
 
     for(let next of graph[cur]){
       if(!visited[next]){
