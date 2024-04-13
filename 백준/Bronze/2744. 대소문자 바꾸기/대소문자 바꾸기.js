@@ -4,15 +4,5 @@ const input = require("fs")
   .trim()
   .split("\n")
 
-const answer = []
-input[0].split('').map((val)=>{
-    if(val.toUpperCase() === val){
-        answer.push(val.toLowerCase())
-    }
-    else if(val.toLowerCase() === val){
-        answer.push(val.toUpperCase())
-    }
-    
-})
-
-console.log(answer.join(''))
+const result = input[0].split('').map(ch => ch==ch.toLowerCase() ? ch.toUpperCase() : ch.toLowerCase()).join('');
+console.log(result);
