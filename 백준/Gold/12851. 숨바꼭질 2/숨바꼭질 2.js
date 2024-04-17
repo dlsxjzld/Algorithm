@@ -8,7 +8,7 @@ const [n, k] = input[0].split(" ").map(Number)
 
 const queue = [n]
 let index = 0
-const distance = Array.from({ length: 200001 }, () => 0)
+const distance = Array.from({ length: 100001 }, () => 0)
 
 
 
