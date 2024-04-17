@@ -8,7 +8,7 @@ const [n, k] = input[0].split(" ").map(Number)
 
 const queue = [n]
 let index = 0
-const distance = Array.from({ length: 200001 }, () => -1)
+const distance = Array.from({ length: 200001 }, () => 0)
 
 
 
@@ -24,8 +24,8 @@ while (queue.length > index) {
   }
 
   for (let next of [2 * curr, curr - 1, curr + 1]) {
-    if (next >= 0 && next <= 100000) {
-      if (distance[next] === -1 || distance[next] === distance[curr] + 1) {
+    if (next >= 0 && next <= 100000 && next !== n) {
+      if (distance[next] === 0 || distance[next] === distance[curr] + 1) {
         distance[next] = distance[curr] + 1
         queue.push(next)
       } 
