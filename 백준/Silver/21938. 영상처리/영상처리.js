@@ -34,10 +34,11 @@ const bfs = (sx, sy) => {
     const [x, y] = queue[index++]
     for (let i = 0; i < 4; i++) {
       const [nx, ny] = [x + move[i][0], y + move[i][1]]
-      if (nx >= 0 && nx < n && ny >= 0 && ny < m && graph[nx][ny] == 255) {
-        graph[nx][ny] = 0
-        queue.push([nx, ny])
+      if (nx < 0 || nx >= n || ny < 0 || ny >= m || graph[nx][ny] == 0) {
+        continue
       }
+      graph[nx][ny] = 0
+      queue.push([nx, ny])
     }
   }
   return 1
