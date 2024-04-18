@@ -36,6 +36,7 @@ const bfs = ({ i: sx, j: sy, graph: _graph }) => {
       _graph[nx][ny] = "."
     }
   }
+  return 1
 }
 
 for (let tc = 0; tc < T; tc++) {
@@ -49,8 +50,7 @@ for (let tc = 0; tc < T; tc++) {
   for (let i = 0; i < h; i++) {
     for (let j = 0; j < w; j++) {
       if (graph[i][j] === "#") {
-        bfs({ i, j, graph })
-        cnt++
+        cnt += bfs({ i, j, graph })
       }
     }
   }
