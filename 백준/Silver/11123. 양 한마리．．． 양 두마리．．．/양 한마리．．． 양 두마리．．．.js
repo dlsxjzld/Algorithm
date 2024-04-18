@@ -4,7 +4,7 @@ const input = require("fs")
   .trim()
   .split("\n")
 
-const T = Number(input.shift())
+const T = Number(input[0])
 
 const move = [
   [0, 1],
@@ -36,21 +36,23 @@ const bfs = ({ i: sx, j: sy, graph: _graph }) => {
       _graph[nx][ny] = "."
     }
   }
-  return 1
 }
 
+let t_index = 1
 for (let tc = 0; tc < T; tc++) {
-  const [h, w] = input.shift().split(" ").map(Number)
+  const [h, w] = input[t_index++].split(" ").map(Number)
   const graph = []
 
   for (let r = 0; r < h; r++) {
-    graph.push(input.shift().split(""))
+    graph.push(input[t_index + r].split(""))
   }
+  t_index += h
   let cnt = 0
   for (let i = 0; i < h; i++) {
     for (let j = 0; j < w; j++) {
       if (graph[i][j] === "#") {
-        cnt += bfs({ i, j, graph })
+        bfs({ i, j, graph })
+        cnt++
       }
     }
   }
