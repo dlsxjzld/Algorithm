@@ -11,18 +11,33 @@ graph[n] = 0
 
 const bfs = (start) => {
   const queue = [start]
+  let index = 0
 
-  while (queue.length > 0) {
-    const curr = queue.shift()
+  while (queue.length > index) {
+    const curr = queue[index++]
 
     for (let next of [curr - 1, curr + 1, curr * 2]) {
-      if (next < 0 || next > 100000 || graph[next] != -1) continue
-      if (next === curr * 2) {
-        queue.unshift(next)
-        graph[next] = graph[curr]
+      if (next < 0 || next > 100000) continue
+      if (graph[next] != -1) {
+        if (next === curr * 2) {
+          if (graph[next] > graph[curr]) {
+            queue.push(next)
+            graph[next] = graph[curr]
+          }
+        } else {
+          if (graph[next] > graph[curr]) {
+            queue.push(next)
+            graph[next] = graph[curr] + 1
+          }
+        }
       } else {
-        queue.push(next)
-        graph[next] = graph[curr] + 1
+        if (next === curr * 2) {
+          queue.push(next)
+          graph[next] = graph[curr]
+        } else {
+          queue.push(next)
+          graph[next] = graph[curr] + 1
+        }
       }
     }
   }
