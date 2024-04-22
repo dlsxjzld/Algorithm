@@ -18,12 +18,11 @@ const bfs = () => {
   while (queue.length > index) {
     const curr = queue[index++]
     for (let next of [curr - 1, curr + 1, curr * 2]) {
-      if (next < 0 || next >= MAX || time[next] !== -1) {
-        continue
+      if (next >= 0 && next < MAX && time[next] === -1) {
+        queue.push(next)
+        time[next] = time[curr] + 1
+        path[next] = curr
       }
-      queue.push(next)
-      time[next] = time[curr] + 1
-      path[next] = curr
     }
   }
 }
