@@ -1,100 +1,71 @@
-const input = require("fs")
+let fs = require("fs");
+let input = fs
   .readFileSync("/dev/stdin")
   .toString()
   .trim()
-  .split("\n")
+  .split("\n");
 
-const [n, m] = input[0].split(" ").map(Number)
-const graph = input.slice(1).map((row) => row.split(" ").map(Number))
-const dx = [0, 0, 1, -1]
-const dy = [1, -1, 0, 0]
+const [N, M] = input.shift().split(" ").map(Number);
+input = input.map((row) => row.split(" "));
 
-const canSetVirusPosition = []
-let answer = Number.MAX_SAFE_INTEGER
-
-graph.forEach((row, i) =>
-  row.forEach((val, j) => {
-    if (val == 2) {
-      canSetVirusPosition.push([i, j])
-    }
-  }),
-)
-
-const visitedVirus = Array.from(
-  { length: canSetVirusPosition.length },
-  () => false,
-)
-
-const check = (_graph) => {
-  const newGraph = _graph.map((row) => row.map((val) => val))
-  const distance = Array.from({ length: n }, () =>
-    Array.from({ length: n }, () => Number.MAX_SAFE_INTEGER),
-  )
-  const queue = []
-  newGraph.forEach((row, i) =>
-    row.forEach((val, j) => {
-      if (val == 3) {
-        queue.push([i, j])
-        distance[i][j] = 0
-      }
-    }),
-  )
-
-  let index = 0
-  while (queue.length > index) {
-    const [x, y] = queue[index++]
-
-    for (let i = 0; i < 4; i++) {
-      const nx = x + dx[i]
-      const ny = y + dy[i]
-      if (
-        nx < 0 ||
-        ny < 0 ||
-        nx >= n ||
-        ny >= n ||
-        newGraph[nx][ny] == 1 ||
-        newGraph[nx][ny] == 3
-      ) {
-        continue
-      }
-      newGraph[nx][ny] = 3
-      distance[nx][ny] = distance[x][y] + 1
-      queue.push([nx, ny])
+const virus = [];
+for (let i = 0; i < N; i++) {
+  for (let j = 0; j < N; j++) {
+    input[i][j] = Number(input[i][j]);
+    if (input[i][j] === 2) {
+      input[i][j] = 0;
+      virus.push([i, j]);
     }
   }
-  let min = 0
-  for (let i = 0; i < n; i++) {
-    for (let j = 0; j < n; j++) {
-      if (newGraph[i][j] == 0 || newGraph[i][j] == 2) {
-        return Number.MAX_SAFE_INTEGER
-      }
-      if (newGraph[i][j] == 3) {
-        min = Math.max(min, distance[i][j])
-      }
+}
+
+const bfs = (q) => {
+  const dy = [0, 1, 0, -1];
+  const dx = [1, 0, -1, 0];
+  const arr = new Array(N).fill().map((_, idx) => [...input[idx]]);
+  q.forEach(([a, b]) => {
+    arr[a][b] = 1;
+  });
+
+  while (q.length) {
+    const [y, x] = q.shift();
+    const now = arr[y][x];
+    for (let d = 0; d < 4; d++) {
+      const ty = y + dy[d];
+      const tx = x + dx[d];
+      if (ty < 0 || N <= ty || tx < 0 || N <= tx || arr[ty][tx]) continue;
+      arr[ty][tx] = now + 1;
+      q.push([ty, tx]);
     }
   }
-  return min
-}
 
-const setVirus = (virus, _graph,prevR,prevC) => {
-  if (virus == m) {
-    answer = Math.min(answer, check(_graph))
-    return
-  }
-for(let idx=0;idx<canSetVirusPosition.length;idx++){
-    const [nx,ny] = canSetVirusPosition[idx]
-    if(prevR > nx) continue
-    if(prevR == nx && prevC > ny) continue
-    if (!visitedVirus[idx]) {
-      visitedVirus[idx] = true
-      _graph[nx][ny] = 3
-      setVirus(virus + 1, _graph,nx,ny)
-      visitedVirus[idx] = false
-      _graph[nx][ny] = 2
+  let ans = 1;
+  for (let i = 0; i < N; i++) {
+    for (let j = 0; j < N; j++) {
+      if (arr[i][j] === 0) {
+        return Infinity;
+      }
+      if (arr[i][j] > ans) ans = arr[i][j];
     }
-}
-}
+  }
+  return ans - 1;
+};
 
-setVirus(0, graph,canSetVirusPosition[0][0],canSetVirusPosition[0][1])
+let minTime = Infinity;
+const virusLen = virus.length;
+const pickVirus = (vi, q) => {
+  if (q.length === M) {
+    const result = bfs(q);
+    if (result < minTime) minTime = result;
+    return;
+  }
 
-console.log(answer == Number.MAX_SAFE_INTEGER ? -1 : answer)
+  if (vi === virusLen) return;
+  pickVirus(vi + 1, [...q, virus[vi]]);
+  pickVirus(vi + 1, q);
+};
+
+pickVirus(0, []);
+
+if (minTime == Infinity) console.log(-1);
+else console.log(minTime);
