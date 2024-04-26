@@ -8,8 +8,13 @@ const n = Number(input[0])
 const answer = new Map()
 
 for (let i = 1; i < 1 + n; i++) {
-  const 확장자 = input[i].split(".")[1]
-  answer.set(확장자, answer.get(확장자) + 1 || 1)
+  const extension = input[i].split(".")[1]
+  if(answer.has(extension)){
+    answer.set(extension,answer.get(extension)+1)
+  }else{
+    answer.set(extension,1)
+  }
+
 }
 
 
