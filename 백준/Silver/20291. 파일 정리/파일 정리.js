@@ -5,18 +5,21 @@ const input = require("fs")
   .split("\n")
 
 const n = Number(input[0])
-const answer = new Map()
+const temp = new Map()
 
 for (let i = 1; i < 1 + n; i++) {
   const extension = input[i].split(".")[1]
-  if(answer.has(extension)){
-    answer.set(extension,answer.get(extension)+1)
-  }else{
-    answer.set(extension,1)
+  if (temp.has(extension)) {
+    temp.set(extension, temp.get(extension) + 1)
+  } else {
+    temp.set(extension, 1)
   }
-
 }
 
+const names = Array.from(temp.keys()).sort()
+let answer = ""
 
-console.log(Array.from(answer)
-  .sort().map(row => row.join(' ')).join('\n'))
+names.forEach((key) => {
+  answer += `${key} ${temp.get(key)}` + "\n"
+})
+console.log(answer)
