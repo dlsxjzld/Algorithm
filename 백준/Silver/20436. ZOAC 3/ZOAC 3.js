@@ -53,18 +53,20 @@ const rightKeyboard = {
   m: [2, 6],
 }
 
+const getTime = (keyboard, hand,currentChar) => {
+  const [currentX, currentY] = keyboard[currentChar]
+  const [nextX, nextY] = keyboard[hand]
+  let diffNext = Math.abs(nextX - currentX) + Math.abs(nextY - currentY)
+  time += diffNext
+  
+}
+
 for (let currentChar of target) {
   if (currentChar in leftKeyboard) {
-    const [currentX, currentY] = leftKeyboard[currentChar]
-    const [leftX, leftY] = leftKeyboard[l]
-    let diffLeft = Math.abs(leftX - currentX) + Math.abs(leftY - currentY)
-    time += diffLeft
+    getTime(leftKeyboard, l,currentChar)
     l = currentChar
   } else {
-    const [currentX, currentY] = rightKeyboard[currentChar]
-    const [rightX, rightY] = rightKeyboard[r]
-    let diffRight = Math.abs(rightX - currentX) + Math.abs(rightY - currentY)
-    time += diffRight
+    getTime(rightKeyboard, r,currentChar)
     r = currentChar
   }
 }
