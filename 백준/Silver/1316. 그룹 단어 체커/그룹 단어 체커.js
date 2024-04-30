@@ -5,25 +5,17 @@ const input = require("fs")
   .split("\n")
 
 const n = Number(input[0])
-let answer = 0
+let answer = n
 for (let i = 1; i < n + 1; i++) {
   const word = input[i]
-  const checker = new Set()
-  const current_char = []
-  let flag = true
-  for (let char of word) {
-    if (!checker.has(char)) {
-      checker.add(char)
-      current_char.push(char)
-    } else {
-      if (current_char.at(-1) != char) {
-        flag = false
-        break
-      }
+
+  for (let j = 0; j < word.length - 1; j++) {
+    if (word[j] == word[j + 1]) {
+      continue
+    } else if (word.slice(j + 1).includes(word[j])) {
+      answer -= 1
+      break
     }
-  }
-  if (flag) {
-    answer += 1
   }
 }
 console.log(answer)
