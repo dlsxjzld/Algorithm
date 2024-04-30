@@ -5,59 +5,73 @@ const input = require("fs")
   .split("\n")
 
 const n = Number(input[0])
-const A = input[1].split(" ").map(Number)
-const operand = input[2].split(" ").map(Number)
-// answer = [Max, Min]
-const answer = [Number.MIN_SAFE_INTEGER, Number.MAX_SAFE_INTEGER]
+const numbers = input[1].split(" ").map(Number) // 수
+const operands = input[2].split(" ").map(Number) // + - * /
 
-function dfs(total, cnt, plus, minus, multi, divide) {
-  if (cnt === n - 1) {
-    // 연산자를 모두 쓰면 answer에 계산된 값 넣기
+let MAX = Number.MIN_SAFE_INTEGER // 최대값 갱신을 위해 가장 작은 값을 할당
+let MIN = Number.MAX_SAFE_INTEGER // 최소값 갱신을 위해 가장 큰 값을 할당
 
-    // Max 값 갱신
-    if (answer[0] < total) {
-      answer[0] = total
-    }
+// 연산자의 개수 === 수의 개수 - 1
+// operands.length === n-1
 
-    // Min 값 갱신
-    if (answer[1] > total) {
-      answer[1] = total
-    }
+// 각 연산자의 개수 > 0 이면 재귀로 진행
+// 연산자의 개수 - 1, 해당 연산자를 넣어서 계산한 값 함수에 넘겨야 재귀로 진행 가능
+// total, +의 개수, -의 개수, *의 개수, /의 개수
+
+const calculate = (total, numberIndex, plus, minus, multiply, divide) => {
+  if (numberIndex == numbers.length) {
+    MIN = Math.min(total, MIN)
+    MAX = Math.max(total, MAX)
     return
   }
+  // index가 numbers.length 와 같아지면 재귀 그만해야함
+  // 숫자가 2개라면 index는 0, 1로 접근 가능 하기 때문.
 
-  // 연산자 갯수 1 증가
-  cnt += 1
   if (plus > 0) {
-    // plus 연산하면 plus 연산자 1개 줄이기
-    dfs(total + A[cnt], cnt, plus - 1, minus, multi, divide)
+    calculate(
+      total + numbers[numberIndex],
+      numberIndex + 1,
+      plus - 1,
+      minus,
+      multiply,
+      divide,
+    )
   }
   if (minus > 0) {
-    // minus 연산하면 minus 연산자 1개 줄이기
-    dfs(total - A[cnt], cnt, plus, minus - 1, multi, divide)
+    calculate(
+      total - numbers[numberIndex],
+      numberIndex + 1,
+      plus,
+      minus - 1,
+      multiply,
+      divide,
+    )
   }
-  if (multi > 0) {
-    // multi 연산하면 multi 연산자 1개 줄이기
-    dfs(total * A[cnt], cnt, plus, minus, multi - 1, divide)
-  }
-  if (divide > 0) {
-    // divide 연산하면 divide 연산자 1개 줄이기
-    // 음수를 양수로 나누게 되면 음수를 양수로
-    dfs(
-      total < 0
-        ? -Math.floor(Math.abs(total) / A[cnt])
-        : Math.floor(total / A[cnt]),
-      cnt,
+  if (multiply > 0) {
+    calculate(
+      total * numbers[numberIndex],
+      numberIndex + 1,
       plus,
       minus,
-      multi,
+      multiply - 1,
+      divide,
+    )
+  }
+  if (divide > 0) {
+    calculate(
+      total > 0
+        ? Math.floor(total / numbers[numberIndex])
+        : -Math.floor(-total / numbers[numberIndex]),
+      numberIndex + 1,
+      plus,
+      minus,
+      multiply,
       divide - 1,
     )
   }
 }
 
-dfs(A[0], 0, operand[0], operand[1], operand[2], operand[3])
+calculate(numbers[0], 1, operands[0], operands[1], operands[2], operands[3])
 
-console.log((answer[0] === 0 ? 0 : answer[0]))
-console.log((answer[1] === 0 ? 0 : answer[1]))
-
+console.log(MAX === 0 ? 0 : MAX)
+console.log(MIN === 0 ? 0 : MIN)
