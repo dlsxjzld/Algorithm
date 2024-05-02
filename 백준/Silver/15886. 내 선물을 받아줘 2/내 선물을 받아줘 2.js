@@ -4,8 +4,8 @@ const input = require("fs")
   .trim()
   .split("\n")
 
-const n = Number(input[0])
 let street = input[1]
+
 while (street.includes("EE")) {
   street = street.replace("EE", "E")
 }
