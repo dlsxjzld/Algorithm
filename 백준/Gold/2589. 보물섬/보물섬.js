@@ -21,7 +21,6 @@ const bfs = (x, y) => {
 
   while (queue.length > index) {
     const [x, y, dist] = queue[index++]
-    answer = Math.max(answer, dist)
 
     for (let i = 0; i < 4; i++) {
       const nx = x + dx[i]
@@ -36,6 +35,7 @@ const bfs = (x, y) => {
       )
         continue
       queue.push([nx, ny, dist + 1])
+      answer = Math.max(answer, dist + 1)
       visited[nx][ny] = true
     }
   }
