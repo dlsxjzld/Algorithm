@@ -20,16 +20,18 @@ const distance = Array(n + 1).fill(Infinity)
 distance[startCity] = 0
 
 const queue = [[startCity]]
+let index = 0
 
-while (queue.length > 0) {
-  const [currentCity] = queue.shift()
+while (queue.length > index) {
+  const [currentCity] = queue[index++]
 
   for (let i = 1; i <= n; i++) {
-    if (graph[currentCity][i] !== Infinity) {
-      if (distance[i] > graph[currentCity][i] + distance[currentCity]) {
-        distance[i] = graph[currentCity][i] + distance[currentCity]
-        queue.push([i])
-      }
+    if (
+      graph[currentCity][i] !== Infinity &&
+      distance[i] > graph[currentCity][i] + distance[currentCity]
+    ) {
+      distance[i] = graph[currentCity][i] + distance[currentCity]
+      queue.push([i])
     }
   }
 }
