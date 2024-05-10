@@ -6,6 +6,7 @@ const input = require("fs")
 
 const T = Number(input[0])
 let index = 1
+const answer = []
 for (let tc = 0; tc < T; tc++) {
   const [n, k, t, m] = input[index++].split(" ").map(Number) // 팀의 개수, 문제의 개수, 당신 팀의 ID, 로그 엔트리의 개수
   const rankingList = Array.from({ length: n + 1 }, (_, index) => ({
@@ -33,22 +34,22 @@ for (let tc = 0; tc < T; tc++) {
   }
 
   rankingList.sort((team1, team2) => {
-    if (team1.score == team2.score) {
-      if (team1.submitCnt == team2.submitCnt) {
-        if (team1.lastSubmitTime > team2.lastSubmitTime) {
-          return 1
-        } else {
-          return -1
-        }
+    if (team1.score > team2.score) {
+      return -1
+    } else if (team1.score < team2.score) {
+      return 1
+    } else {
+      if (team1.submitCnt < team2.submitCnt) {
+        return -1
       } else if (team1.submitCnt > team2.submitCnt) {
         return 1
+      } else {
+        return team1.lastSubmitTime < team2.lastSubmitTime ? -1 : 1
       }
-      return -1
-    } else if (team1.score > team2.score) {
-      return -1
     }
-    return 1
   })
 
-  console.log(rankingList.findIndex((team) => team.teamId === t) + 1)
+  answer.push(rankingList.findIndex((team) => team.teamId === t) + 1)
 }
+
+console.log(answer.join("\n"))
