@@ -10,22 +10,15 @@ const destroyWall = input.slice(2).map((row) => row.split(" ").map(Number)) ?? [
   0, 0,
 ]
 
-destroyWall.sort((a,b)=>a[0] < b[0] ? -1 : 1)
+const visited = Array.from({length: n + 1}, () => false);
+    
+for(const [x, y] of destroyWall) {
+    for(let i = x ; i < y ; i++) {
+        visited[i] = true;
+    }    
+}
 
-const wall = Array.from({ length: n + 1 }, () => 0)
-
-destroyWall.forEach(([start, end]) => {
-  for (let i = start; i <= end; i++) {
-    if (wall[start] === 0) {
-      wall[i] = start
-    } else {
-      wall[i] = wall[start]
-    }
-  }
-})
+const wall = visited.slice(1).filter(visit => visit === false).length;
 
 
-const oneRoomCount = wall.slice(1).filter((val)=> val === 0).length
-const multiRoomCount = Array.from(new Set(wall.slice(1).filter((val)=>val !== 0))).length
-
-console.log(oneRoomCount + multiRoomCount)
+console.log(wall)
