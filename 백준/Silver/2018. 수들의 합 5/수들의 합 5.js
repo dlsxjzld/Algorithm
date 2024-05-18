@@ -6,24 +6,26 @@ const input = require("fs")
 
 const n = Number(input[0])
 
-let start = 1
-let end = 1
+let start = 0
+let end = 0
 let ssum = 0
-let cnt = 0
 
-while (end <= n + 1) {
-  if (ssum < n) {
-    ssum += end
-    end += 1
-  } else if (ssum > n) {
-    ssum -= start
-    start += 1
-  }
+let result = 0
 
-  if (ssum === n) {
-    cnt += 1
-    ssum -= start
-    start += 1
+while (end <=n && start<=end) {
+  if(ssum === n){
+      // 합 === n
+      result++
+      start++
+      ssum-=start
+  }else if(ssum > n){
+      // 합 > n
+      start++
+      ssum -= start
+  }else{
+      // 합 < n
+      end++
+      ssum += end
   }
 }
-console.log(cnt)
+console.log(result)
