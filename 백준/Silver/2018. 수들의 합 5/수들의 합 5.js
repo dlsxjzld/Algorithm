@@ -16,12 +16,12 @@ while (end <=n && start<=end) {
   if(ssum === n){
       // 합 === n
       result++
-      start++
-      ssum-=start
+      end++
+      ssum+=end
   }else if(ssum > n){
       // 합 > n
-      start++
       ssum -= start
+      start++
   }else{
       // 합 < n
       end++
