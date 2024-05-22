@@ -4,21 +4,15 @@ const input = require("fs")
   .trim()
   .split("\n")
 
-const solution = (string) => {
-  let temp = ""
-  if (string.length === 1) {
-    return string
+const solution = (n) => {
+  if (n === 0) {
+    return "-"
   }
-  const newString = string.slice(0, string.length / 3)
-  temp += solution(newString)
-  temp += " ".repeat(string.length / 3)
-  temp += solution(newString)
-
-  return temp
+  const side = solution(n - 1)
+  const center = " ".repeat(3 ** (n - 1))
+  return side + center + side
 }
 
 for (let n of input) {
-  const str = "-".repeat(3 ** Number(n))
-
-  console.log(solution(str))
+  console.log(solution(Number(n)))
 }
