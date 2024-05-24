@@ -19,9 +19,6 @@ const move = (start) => {
   let index = 0
   while (queue.length > index) {
     const [current, time] = queue[index++]
-    if (current === E) {
-      break
-    }
 
     for (let nx of [current + 1, current - 1 , ...graph[current]]) {
       if (nx < 1 || nx > N || visited[nx]) continue
