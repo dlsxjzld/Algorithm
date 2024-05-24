@@ -20,7 +20,7 @@ graph.forEach((row, r) =>
 const dx = [0, 0, 1, -1]
 const dy = [1, -1, 0, 0]
 
-const goBomb = () => {
+const goBomb = (time,graph,bomb_graph) => {
   for (let i = 0; i < r; i++) {
     for (let j = 0; j < c; j++) {
       if (graph[i][j] === "O" && bomb_graph[i][j] === time) {
@@ -46,7 +46,7 @@ const goBomb = () => {
   }
 }
 
-const setBomb = () => {
+const setBomb = (time,graph,bomb_graph) => {
   for (let i = 0; i < r; i++) {
     for (let j = 0; j < c; j++) {
       if (graph[i][j] === ".") {
@@ -60,9 +60,9 @@ const setBomb = () => {
 let time = 1
 while (time <= n) {
   if (time % 2) {
-    goBomb(graph)
+    goBomb(time,graph,bomb_graph)
   } else {
-    setBomb(graph)
+    setBomb(time,graph,bomb_graph)
   }
   time++
 }
