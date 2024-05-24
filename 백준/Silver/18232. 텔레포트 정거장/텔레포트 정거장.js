@@ -4,42 +4,33 @@ const input = require("fs")
   .trim()
   .split("\n")
 
-const [n, m] = input[0].split(" ").map(Number)
+const [N, M] = input[0].split(" ").map(Number)
+const [S, E] = input[1].split(" ").map(Number)
+const graph = Array.from({ length: N + 1 }, () => [])
+const visited = Array.from({ length: N + 1 }, () => 0)
+input.slice(2).forEach((row) => {
+  const [x, y] = row.split(" ").map(Number)
+  graph[x].push(y)
+  graph[y].push(x)
+})
 
-const [s, e] = input[1].split(" ").map(Number)
-const graph = Array.from({ length: n + 1 }, () => [])
-const visited = Array.from({ length: n + 1 }, () => false)
-if (m > 0) {
-  for (let i = 2; i < 2 + m; i++) {
-    const [x, y] = input[i].split(" ").map(Number)
-    graph[x].push(y)
-    graph[y].push(x)
-  }
-}
+const move = (start) => {
+  const queue = [[start, 0]]
+  let index = 0
+  while (queue.length > index) {
+    const [current, time] = queue[index++]
+    if (current === E) {
+      break
+    }
 
-const queue = [[s, 0]]
-visited[s] = true
-let index = 0
-while (queue.length > index) {
-  const [curr, dist] = queue[index++]
-  
-  if (curr === e) {
-    console.log(dist)
-    break
-  }
-
-  for (let next of graph[curr]) {
-    if (visited[next] === false) {
-      queue.push([next, dist + 1])
-      visited[next] = true
+    for (let nx of [current + 1, current - 1 , ...graph[current]]) {
+      if (nx < 1 || nx > N || visited[nx]) continue
+      
+      visited[nx] = time+1
+      queue.push([nx, time + 1])
     }
   }
-  if(curr+1 <=n && !visited[curr+1]){
-    queue.push([curr+1,dist+1])
-    visited[curr+1] = true
-  }
-  if(curr-1 >=1 && !visited[curr-1]){
-    queue.push([curr-1,dist+1])
-    visited[curr-1] = true
-  }
 }
+move(S)
+
+console.log(visited[E])
