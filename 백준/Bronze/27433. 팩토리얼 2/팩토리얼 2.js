@@ -4,5 +4,13 @@ const fa = (num)=>{
     if(num ==0) return 1
     return num * fa(num-1)
 }
-
-console.log(fa(Number(input[0])))
+if(Number(input[0]) === 0){
+    console.log(1)
+    return
+}
+let i=Number(input[0])
+let ssum = 1
+while(i>=1){
+    ssum *= i--
+}
+console.log(ssum)
