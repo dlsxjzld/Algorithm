@@ -1,20 +1,20 @@
-const input = require("fs")
-  .readFileSync("/dev/stdin")
+const fs = require('fs');
+
+let [n, m] = fs
+  .readFileSync('/dev/stdin')
   .toString()
   .trim()
-  .split("\n")
+  .split(' ')
+  .map(Number);
 
-const [n, m] = input[0].split(" ").map(Number)
-const dp = Array.from({ length: 101 }, () =>
-  Array.from({ length: 101 }, () => BigInt(0)),
-)
-for (let i = 1; i <= n; i++) {
-  for (let j = 0; j <= i; j++) {
-    if (j == 0 || j == i) {
-      dp[i][j] = BigInt(1)
-    } else {
-      dp[i][j] = BigInt(dp[i - 1][j]) + BigInt(dp[i - 1][j - 1])
-    }
-  }
+m = n / 2 - m > 0 ? m : n - m;
+
+let a = 1n;
+let b = 1n;
+
+for (let i = 0; i < m; i++) {
+  a *= BigInt(n - i);
+  b *= BigInt(1 + i);
 }
-console.log(dp[n][m].toString())
+
+console.log((a / b).toString());
