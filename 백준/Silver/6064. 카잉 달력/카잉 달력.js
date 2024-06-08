@@ -5,34 +5,35 @@ const input = require("fs")
   .split("\n")
 
 const T = Number(input[0])
+
 const getGcd = (a, b) => {
-  const r = a % b
-  if (r === 0) {
-    return b
+  let newA = a
+  let newB = b
+  while (newB !== 0) {
+    ;[newA, newB] = [newB, newA % newB]
   }
-  return getGcd(b, r)
+  return newA
 }
+const answer = []
 
-for (let i = 1; i < T + 1; i++) {
-  const [m, n, x, y] = input[i].split(" ").map(Number)
+for (let tc = 1; tc <= T; tc++) {
+  const [m, n, x, y] = input[tc].split(" ").map(Number)
   const gcd = getGcd(m, n)
-  const max = (m * n) / gcd
-
+  const MAX = (m * n) / gcd
   let sx = 0
+  let cnt = -1
 
-  let answer = -1
   while (true) {
-    const cnt = m * sx + x
-    if (cnt > max) {
-      break
-    }
-    const temp = cnt % n === 0 ? n : cnt % n
-    if (temp === y) {
-      answer = cnt
+    const num = sx * m + x
+    if (num > MAX) break
+    if ((num - y) % n === 0) {
+      cnt = num
       break
     }
     sx++
   }
 
-  console.log(answer)
+  answer.push(cnt)
 }
+
+console.log(answer.join('\n'))
