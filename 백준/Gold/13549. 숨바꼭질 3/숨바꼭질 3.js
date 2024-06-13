@@ -1,4 +1,3 @@
-
 // 두번째 코드
 const input = require("fs")
   .readFileSync("/dev/stdin")
