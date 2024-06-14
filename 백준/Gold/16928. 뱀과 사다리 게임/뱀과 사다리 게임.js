@@ -44,25 +44,7 @@ const solution = () => {
           queue.push([next, cnt + 1])
           board[next] = cnt + 1
         }
-      } else {
-        // 도착했다면
-        if (사다리[next] !== undefined && board[next] > cnt + 1) {
-          queue.push([사다리[next], cnt + 1])
-          board[next] = cnt + 1
-          board[사다리[next]] = cnt + 1
-        } else if (뱀[next] !== undefined && board[next] > cnt + 1) {
-          queue.push([뱀[next], cnt + 1])
-          board[next] = cnt + 1
-          board[뱀[next]] = cnt + 1
-        } else if (
-          사다리[next] === undefined &&
-          뱀[next] === undefined &&
-          board[next] > cnt + 1
-        ) {
-          queue.push([next, cnt + 1])
-          board[next] = cnt + 1
-        }
-      }
+      } 
     }
   }
 }
