@@ -16,10 +16,10 @@ const arrQ = input[2]
   .filter((val) => !arrK.includes(val))
 const arrM = input.slice(3).map((row) => row.split(" ").map(Number))
 
-const students = Array(5001).fill(false)
+const students = Array(n+3).fill(false)
 
 arrQ.forEach((val) => {
-  for (let i = 3; i <= 5000; i++) {
+  for (let i = 3; i <= n+2; i++) {
     if (!students[i] && i % val === 0) {
       students[i] = true
     }
@@ -27,7 +27,7 @@ arrQ.forEach((val) => {
 })
 
 arrK.forEach((val) => {
-  for (let i = 3; i <= 5000; i++) {
+  for (let i = 3; i <= n+2; i++) {
     if (students[val]) {
       students[val] = false
     }
