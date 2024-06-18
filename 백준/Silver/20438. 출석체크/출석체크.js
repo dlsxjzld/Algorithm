@@ -5,39 +5,30 @@ const input = require("fs")
   .split("\n")
 
 const [n, k, q, m] = input[0].split(" ").map(Number)
-const arrK = input[1]
+
+const sleeps = input[1].split(" ").map(Number)
+const students = input[2]
   .split(" ")
   .map(Number)
-  .sort((a, b) => a - b)
-const arrQ = input[2]
-  .split(" ")
-  .map(Number)
-  .sort((a, b) => a - b)
-  .filter((val) => !arrK.includes(val))
+  .filter((val) => !sleeps.includes(val))
 const arrM = input.slice(3).map((row) => row.split(" ").map(Number))
 
-const students = Array(n+3).fill(false)
+const prev = Array.from({ length: n + 3 }, () => 0)
 
-arrQ.forEach((val) => {
-  for (let i = 3; i <= n+2; i++) {
-    if (!students[i] && i % val === 0) {
-      students[i] = true
+for (let i = 3; i <= n + 2; i++) {
+  prev[i] = prev[i - 1]
+
+  if (sleeps.includes(i)) continue
+
+  for (let val of students) {
+    if (i % val === 0) {
+      prev[i] = prev[i - 1] + 1
     }
   }
-})
-
-arrK.forEach((val) => {
-  for (let i = 3; i <= n+2; i++) {
-    if (students[val]) {
-      students[val] = false
-    }
-  }
-})
+}
 
 const answer = []
-
 arrM.forEach(([s, e]) => {
-  answer.push(students.slice(s, e + 1).filter((val) => val === false).length)
+  answer.push(e - s + 1 - (prev[e] - prev[s-1]))
 })
-
-console.log(answer.join("\n"))
+console.log(answer.join('\n'))
