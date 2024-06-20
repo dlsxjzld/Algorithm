@@ -4,20 +4,20 @@ const input = require("fs")
   .trim()
   .split("\n")
 
-let s = input[0].split('')
-let t = input[1].split('')
+const S = input[0]
+const T = input[1].split("")
 
-while(s.length != t.length){
-  if(t[t.length-1] === 'A'){
-    t.pop()
-  }else if(t[t.length-1] === 'B'){
-    t.pop()
-    t.reverse()
+while (S.length !== T.length) {
+  if (T[T.length - 1] === "A") {
+    T.pop()
+  } else {
+    T.pop()
+    T.reverse()
   }
 }
 
-if(s.join('') === t.join('')){
+if (S === T.join("")) {
   console.log(1)
-}else{
+} else {
   console.log(0)
 }
