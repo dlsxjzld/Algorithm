@@ -16,8 +16,5 @@ while (S.length !== T.length) {
   }
 }
 
-if (S === T.join("")) {
-  console.log(1)
-} else {
-  console.log(0)
-}
+
+  console.log(S === T.join("") ?  1 : 0)
