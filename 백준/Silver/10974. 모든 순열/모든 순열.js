@@ -4,29 +4,26 @@ const input = require("fs")
   .trim()
   .split("\n")
 
-const n = Number(input[0])
+const N = Number(input[0])
 
-// const array = Array.from({length:n},(idx)=>idx+1)
-const visited = Array.from({ length: n + 1 }, () => false)
+const visited = Array(N + 1).fill(false)
+const answer = []
 
-const dfs = (array) => {
-  if (array.length === n) {
-    console.log(array.join(" "))
+const permutation = (arr) => {
+  if (arr.length === N) {
+    answer.push(arr.join(" "))
     return
   }
-  for (let i = 1; i < n + 1; i++) {
+  for (let i = 1; i <= N; i++) {
     if (!visited[i]) {
       visited[i] = true
-      dfs([...array, i])
+      arr.push(i)
+      permutation(arr)
       visited[i] = false
+      arr.pop()
     }
   }
 }
+permutation([])
 
-for (let idx = 1; idx < n + 1; idx++) {
-  if (!visited[idx]) {
-    visited[idx] = true
-    dfs([idx])
-    visited[idx] = false
-  }
-}
+console.log(answer.join('\n'))
