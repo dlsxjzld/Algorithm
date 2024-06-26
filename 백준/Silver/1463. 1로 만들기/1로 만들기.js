@@ -5,20 +5,21 @@ const input = require("fs")
   .split("\n")
 
 let N = Number(input[0])
+const arr = new Array(1000001).fill(0);
 
-const dp = Array(N + 1).fill(Infinity)
-dp[N] = 0
-
-while (N >= 1) {
-  if (N % 3 === 0) {
-    dp[N / 3] = Math.min(dp[N / 3], dp[N] + 1)
+function solution() {
+  arr[2] = 1;
+  arr[3] = 1;
+  for (let i = 4; i <= 1000000; i++) {
+    arr[i] = arr[i - 1] + 1;
+    if (i % 2 === 0) {
+      arr[i] = Math.min(arr[i], arr[i / 2] + 1);
+    }
+    if (i % 3 === 0) {
+      arr[i] = Math.min(arr[i], arr[i / 3] + 1);
+    }
   }
-
-  if (N % 2 === 0) {
-    dp[N / 2] = Math.min(dp[N / 2], dp[N] + 1)
-  }
-  dp[N - 1] = Math.min(dp[N - 1], dp[N] + 1)
-  N--
+  return arr[N];
 }
 
-console.log(dp[1])
+console.log(solution());
