@@ -1,19 +1,32 @@
-const input = require('fs')
-  .readFileSync('/dev/stdin')
+const input = require("fs")
+  .readFileSync("/dev/stdin")
   .toString()
   .trim()
-  .split('\n');
+  .split("\n")
 
-const n = Number(input[0]);
-const A = input[1].split(' ').map(Number);
-const dp = Array.from({ length: n }, () => 1);
+const n = Number(input[0])
+const a = input[1].split(" ").map(Number)
+const dp = [a[0]]
 
-for (let i = 0; i < n; i++) {
-  for (let j = 0; j < i; j++) {
-    if (A[i] > A[j]) {
-      dp[i] = Math.max(dp[i], dp[j] + 1);
+const findIndex = (list, s, e, target) => {
+  while (s < e) {
+    let mid = Math.floor((s + e) / 2)
+    if (list[mid] >= target) {
+      e = mid
+    } else {
+      s = mid + 1
     }
+  }
+  return e
+}
+
+for (let i = 1; i < n; i++) {
+  if (a[i] > dp[dp.length - 1]) {
+    dp.push(a[i])
+  } else {
+    const index = findIndex(dp, 0, dp.length - 1, a[i])
+    dp[index] = a[i]
   }
 }
 
-console.log(Math.max(...dp));
+console.log(dp.length)
