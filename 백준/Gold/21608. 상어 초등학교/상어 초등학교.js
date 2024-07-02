@@ -54,28 +54,7 @@ const findLike = (liked) => {
     ([r, c, liked, empty]) => liked === maximum_liked,
   )
 
-  sortedPosition.sort((a, b) => {
-    if (b[3] > a[3]) {
-      return 1
-    } else if (b[3] < a[3]) {
-      return -1
-    } else {
-      if (a[0] < b[0]) {
-        return -1
-      } else if (a[0] > b[0]) {
-        return 1
-      } else {
-        if (a[1] < b[1]) {
-          return -1
-        } else if (a[1] > b[1]) {
-          return 1
-        } else {
-          return 0
-        }
-      }
-    }
-  })
-  
+  sortedPosition.sort((a, b) => b[3] - a[3] || a[0] - b[0] || a[1] - b[1])
 
   return sortedPosition[0]
 }
@@ -85,7 +64,7 @@ for (let i = 1; i <= N ** 2; i++) {
   const data = input[i].split(" ").map(Number)
   const [student, liked] = [data[0], data.slice(1)]
   likedDict[student] = liked
-  const [r, c, like, empty] = findLike(liked)
+  const [r, c] = findLike(liked)
   graph[r][c] = student
 }
 
