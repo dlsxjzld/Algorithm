@@ -21,8 +21,8 @@ if (k === 0) {
     }
   }
 } else {
-  const target_r = Math.floor(k / m)
-  const target_c = (k % m) - 1
+  const target_r = Math.floor((k-1) / m)
+  const target_c = (k % m) - 1 === -1 ? m - 1 : (k % m) - 1
 
   for (let i = 0; i <= target_r; i++) {
     for (let j = 0; j <= target_c; j++) {
