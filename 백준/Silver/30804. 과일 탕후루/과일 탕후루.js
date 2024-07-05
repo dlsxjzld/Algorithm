@@ -7,29 +7,36 @@ const input = require("fs")
 const N = Number(input[0])
 const arr = input[1].split(" ").map(Number)
 
-let s = 0
-let e = 0
+let left = 0
+let right = 0
+let cnt = Array.from({ length: 10 }, () => 0) // 과일 종류별 갯수
+let kind = 0
 let answer = 0
-const fruit = Array(10).fill(0)
 
-let cnt = 0
-while (e < N) {
-  fruit[arr[e]] += 1
+while (left <= right && right < N) {
+  const curr = arr[right]
 
-  if (fruit[arr[e]] === 1) {
-    cnt += 1
-  }
-
-  while (cnt > 2) {
-    fruit[arr[s]] -= 1
-    if (fruit[arr[s]] === 0) {
-      cnt -= 1
+  if (kind <= 2) {
+    if (cnt[curr] === 0) {
+        // 과일의 갯수가 0개이면 종류가 하나 추가됨
+        kind += 1
     }
-    s += 1
+    cnt[curr] += 1
+    right += 1
+  } 
+  if(kind>=3){
+    cnt[arr[left]] -= 1
+
+    if (cnt[arr[left]] === 0) {
+      kind -= 1
+    }
+    left += 1
   }
   
-  answer = Math.max(answer, e - s + 1)
-  e += 1
+  answer = Math.max(
+    answer,
+    cnt.reduce((prev, curr) => prev + curr, 0),
+  )
 }
 
 console.log(answer)
