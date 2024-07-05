@@ -35,7 +35,7 @@ while (left <= right && right < N) {
   
   answer = Math.max(
     answer,
-    cnt.reduce((prev, curr) => prev + curr, 0),
+    right-left
   )
 }
 
