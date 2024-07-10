@@ -8,23 +8,25 @@ const input = require("fs")
 //   1 2 3 3 4 1 10 8 1
 
 //   0 0 0 0 0 1 1  2 3
+//   1부터 i까지의 누적된 실수
+
 const n = Number(input[0])
 const arr = [0].concat(input[1].split(" ").map(Number))
+const dp = Array(n + 1).fill(0)
 const q = Number(input[2])
-const question = input.slice(3).map((row) => row.split(" ").map(Number))
-
-const prefix = Array(n + 1).fill(0)
 
 for (let i = 1; i < n; i++) {
+  dp[i + 1] = dp[i]
+
   if (arr[i] > arr[i + 1]) {
-    prefix[i + 1] = 1
+    dp[i + 1] = dp[i] + 1
   }
-  prefix[i + 1] += prefix[i]
 }
 
 const answer = []
-for (let [s, e] of question) {
-  answer.push(prefix[e] - prefix[s])
+for (let i = 3; i < q + 3; i++) {
+  const [x, y] = input[i].split(" ").map(Number)
+  answer.push(dp[y] - dp[x])
 }
 
 console.log(answer.join('\n'))
