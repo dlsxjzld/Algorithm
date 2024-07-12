@@ -26,7 +26,7 @@ for (let tc = 1; tc <= T; tc++) {
       left.push(key)
     }
   }
-  answer.push(left.concat(right.reverse()).join(""))
+  answer.push(left.join("") + right.reverse().join(""))
 }
 
 console.log(answer.join("\n"))
