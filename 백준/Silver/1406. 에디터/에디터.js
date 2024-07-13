@@ -1,31 +1,32 @@
-const input = require("fs")
-  .readFileSync("/dev/stdin")
-  .toString()
-  .trim()
-  .split("\n")
+const filePath = process.platform === 'linux' ? 
+'/dev/stdin' : 'example.txt';
+const input = require('fs').readFileSync(filePath).toString().trim().split('\n');
+let rightStack = [];
+let l = input.splice(0, 1);
+const str = l[0].split('');
 
-const left = input[0].split("")
-const right = []
-const m = Number(input[1])
 
-for (let i = 2; i < 2 + m; i++) {
-  const [order, letter] = input[i].split(" ")
+const comand = +input[0];
 
-  if (order === "L") {
-    if (left.length > 0) {
-      right.push(left.pop())
+for (let i = 1; i <=comand; i++){
+    switch (input[i][0]) { 
+        case 'L':
+            if (str.length > 0) rightStack.push(str.pop()); 
+            break;
+        case 'D':
+            if (rightStack.length > 0) str.push(rightStack.pop()); 
+            break;
+        case 'B':
+            if (str.length > 0) {
+                str.pop();
+            }
+            break;
+        case 'P':
+            str.push(input[i][2]);
+            break;
     }
-  } else if (order === "D") {
-    if (right.length > 0) {
-      left.push(right.pop())
-    }
-  } else if (order === "B") {
-    if (left.length > 0) {
-      left.pop()
-    }
-  } else if (order === "P") {
-    left.push(letter)
-  }
+
 }
-
-console.log(left.join("") + right.reverse().join(""))
+let answer = str.join('');
+answer+=rightStack.reverse().join('');
+console.log(answer);
