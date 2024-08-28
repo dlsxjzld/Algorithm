@@ -1,29 +1,41 @@
-function solution(arr) {
-    let answer = [0,0];
-    let length= arr.length
-    const dfs = function (l,x,y,graph){
-    if (l>=1){
-    const start = graph[x][y]
-    let numOfStart = 0
-    for(let i=x;i<x+l;i++){
-        for(let j=y;j<y+l;j++){
-            numOfStart+= (start ===graph[i][j] ? 1:0)
-        }
-    }
-    if (numOfStart !== l*l){
-        l /=2
-        dfs(l,x,y,graph)
-        dfs(l,x+l,y,graph)
-        dfs(l,x,y+l,graph)
-        dfs(l,x+l,y+l,graph)
-    }else{
-        answer[start]+=1
-        return
-        }
-    }
+function dfs(x,y,l,arr,answer){ // x 위치, y 위치, 길이, arr
     
+    // console.log("x,y,l,arr,answer",x,y,l,arr,answer)
+    const cnt = [0,0] // 0과 1의 개수
+
+
+    for(let r=x;r<x+l;r++){
+        for(let c=y;c<y+l;c++){
+            cnt[arr[r][c]] += 1
+        }
+    }
+
+    if(cnt[0] === l*l){ // 0 압축 가능
+        answer[0]+=1
+        // console.log('zero',answer)
+        return
+    }else if(cnt[1] === l*l){ // 1 압축 가능
+        answer[1] +=1
+        return
+    }
+    else{ // 4분할 후 다시 dfs
+        // console.log('divide',answer)
+        // if(l>=2){
+            const newL = l/2
+            dfs(x,y,newL,arr,answer)
+            dfs(x,y+newL,newL,arr,answer)
+            dfs(x+newL,y,newL,arr,answer)
+            dfs(x+newL,y+newL,newL,arr,answer)
+        // }
+    }
 }
-    dfs(length,0,0,arr)
+
+function solution(arr) {
+    var answer = [0,0]; // 0과 1의 개수
+    const arrL = arr.length // 초기 길이
+    
+    dfs(0,0,arrL,arr,answer)
+    
     
     return answer;
 }
