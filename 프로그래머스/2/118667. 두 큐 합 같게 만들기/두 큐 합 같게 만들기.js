@@ -10,9 +10,9 @@ function solution(queue1, queue2) {
         if(sum1 === sum/2) {
             return cnt
         }else if(sum1<sum/2){
-            sum1 += queue[q2pointer++]
+            sum1 += queue[(q2pointer++)%queue.length]
         }else if(sum1>sum/2){
-            sum1 -= queue[q1pointer++]
+            sum1 -= queue[(q1pointer++)%queue.length]
         }
         cnt+=1
     }
