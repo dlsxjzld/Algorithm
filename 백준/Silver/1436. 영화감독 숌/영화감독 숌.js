@@ -7,15 +7,12 @@ const input = require("fs")
 const n = Number(input[0])
 
 let start = 0
-let answer = 0
+let answer = 665
 
 while (start < n) {
   answer += 1
   if (answer.toString().includes("666")) {
     start += 1
   }
-  if (start === n) {
-    console.log(answer)
-    break
-  }
 }
+console.log(answer)
