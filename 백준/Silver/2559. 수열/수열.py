@@ -5,10 +5,7 @@ input = sys.stdin.readline
 n,k = map(int,input().split(' '))
 numbers = list(map(int,input().split(' ')))
 
-current = 0
-for i in range(0,k):
-  current += numbers[i]
-
+current = sum(numbers[:k])
 answer = current
 
 for i in range(1,n-k+1):
