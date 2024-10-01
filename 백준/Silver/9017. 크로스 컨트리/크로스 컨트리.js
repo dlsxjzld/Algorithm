@@ -7,15 +7,6 @@ const input = require("fs")
 const t = Number(input[0])
 const answer = []
 
-const makeTeam = (number) => {
-  const team = {
-    number,
-    sum: 0,
-    fifth: 0,
-  }
-  return team
-}
-
 for (let tc = 0; tc < t; tc++) {
   // 점수 구할 팀 번호 구하기 -> 각 팀 번호가 6개 있는지
   // 팀 번호에 해당하는 팀은 4번째까지 값 더하고 5번째 팀원 점수 기록
@@ -67,12 +58,12 @@ for (let tc = 0; tc < t; tc++) {
     if (candidates[teamNumber[i]]["cnt"] === 5) {
       candidates[teamNumber[i]]["fifth"] = score[i]
     }
+
   }
 
   const filteredTeams = Object.values(candidates)
-    .map(({ number, sum, fifth, _ }) => [number, sum, fifth])
-    .sort((a, b) => a[1] - b[1] || a[2] - b[2])
+    .sort((a, b) => a['sum'] - b['sum'] || a['fifth'] - b['fifth'])
 
-  answer.push(filteredTeams[0][0])
+  answer.push(filteredTeams[0]['number'])
 }
 console.log(answer.join("\n"))
