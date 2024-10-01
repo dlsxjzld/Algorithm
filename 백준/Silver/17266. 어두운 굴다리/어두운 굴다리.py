@@ -1,28 +1,22 @@
-
-
-def check(lights, mid):
-    if lights[1] - lights[0] > mid:
+def bs(li, m):
+    if li[1]-li[0] > m:
         return 0
-    if lights[-1] - lights[-2] > mid:
+    if li[-1]-li[-2] > m:
         return 0
-    for i in range(1, len(lights)-2):
-        if (lights[i+1]-lights[i])/2 > mid:
+    for i in range(1, len(li)-2):
+        if (li[i+1]-li[i])/2 > m:
             return 0
     return 1
 
-
-n = int(input())
-m = int(input())
-lights = [0]+list(map(int, input().split()))+[n]
-
-s, e = 0, n
+N, M = int(input()), int(input())
+li = [0] + list(map(int, input().split())) + [N]
+s, e = 0, N
 res = 0
 while s <= e:
-    mid = (s+e)//2
-    if check(lights, mid):
-        e = mid-1
-        res = mid
+    m = (s+e)//2
+    if bs(li, m):
+        e = m-1
+        res = m
     else:
-        s = mid+1
-
+        s = m+1
 print(res)
