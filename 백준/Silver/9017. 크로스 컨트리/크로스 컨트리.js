@@ -23,53 +23,56 @@ for (let tc = 0; tc < t; tc++) {
   const n = Number(input[tc * 2 + 1])
   const teamNumber = input[tc * 2 + 2].split(" ").map(Number)
 
-  const tmp = {}
+  const teamMemberCount = {}
   for (let i = 0; i < n; i++) {
-    if (tmp[teamNumber[i]] == undefined) {
-      tmp[teamNumber[i]] = 1
-    } else {
-      tmp[teamNumber[i]] += 1
-      
+    if (!teamMemberCount[teamNumber[i]]) {
+      teamMemberCount[teamNumber[i]] = 0
     }
+    teamMemberCount[teamNumber[i]] += 1
   }
-  const real_team = new Set(Object.entries(tmp).filter(([number,cnt]) => cnt === 6).map(([number,_])=>Number(number)))
+
+  const validTeam = new Set(
+    Object.entries(teamMemberCount)
+      .filter(([number, cnt]) => cnt === 6)
+      .map(([number, _]) => Number(number)),
+  )
   const score = []
-  let x=1
-  for(let i=0;i<n;i++){
-    if(real_team.has(teamNumber[i])){
+  let x = 1
+  for (let i = 0; i < n; i++) {
+    if (validTeam.has(teamNumber[i])) {
       score.push(x++)
-    }else{
+    } else {
       score.push(0)
     }
   }
 
   const candidates = {}
   for (let i = 0; i < n; i++) {
-    if (candidates[teamNumber[i]] == undefined) {
+    if (!validTeam.has(teamNumber[i])) {
+      continue
+    }
+
+    if (!candidates[teamNumber[i]]) {
       candidates[teamNumber[i]] = {
         number: teamNumber[i],
-        sum: score[i],
+        sum: 0,
         fifth: 0,
-        cnt: 1,
+        cnt: 0,
       }
-    } else {
-      candidates[teamNumber[i]]["cnt"] += 1
-      if (candidates[teamNumber[i]]["cnt"] === 6)  continue
-    if(candidates[teamNumber[i]]['cnt']<5){
-        
+    }
+    candidates[teamNumber[i]]["cnt"] += 1
+    if (candidates[teamNumber[i]]["cnt"] < 5) {
       candidates[teamNumber[i]]["sum"] += score[i]
     }
-      if (candidates[teamNumber[i]]["cnt"] === 5) {
-        candidates[teamNumber[i]]["fifth"] = score[i]
-      }
+    if (candidates[teamNumber[i]]["cnt"] === 5) {
+      candidates[teamNumber[i]]["fifth"] = score[i]
     }
   }
 
-
   const filteredTeams = Object.values(candidates)
-    .filter(({number,sum,fifth ,cnt}) => cnt === 6)
-    .map(({number,sum,fifth,_}) => [number,sum,fifth]).sort((a,b)=>a[1]-b[1] || a[2] - b[2])
+    .map(({ number, sum, fifth, _ }) => [number, sum, fifth])
+    .sort((a, b) => a[1] - b[1] || a[2] - b[2])
 
   answer.push(filteredTeams[0][0])
 }
-console.log(answer.join('\n'))
+console.log(answer.join("\n"))
