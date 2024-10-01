@@ -22,40 +22,42 @@ const input = require("fs")
 // 누적합 + (n- 적절한 값 이후 index) * 적잘한 값 <= M 이면 오케이
 
 const n = Number(input[0])
-const data = input[1].split(' ').map(Number).sort((a,b)=>a-b)
+const data = input[1]
+  .split(" ")
+  .map(Number)
+  .sort((a, b) => a - b)
 const m = Number(input[2])
 
-const total = data.reduce((a,b)=>a+b)
+const total = data.reduce((a, b) => a + b)
 let left = 1
-let right = data[n-1]
+let right = data[n - 1]
 let answer = data[0]
 
-const canGive = (price)=>{
-  let sum= 0
-  for(let i=0;i<n;i++){
-    if(data[i] <= price){
+const canGive = (price) => {
+  let sum = 0
+  for (let i = 0; i < n; i++) {
+    if (data[i] <= price) {
       sum += data[i]
-    }else{
+    } else {
       sum += price
     }
   }
 
-  return sum <=m
+  return sum <= m
 }
 
-if(total <=m){
-  console.log(data[n-1])
-}else{
-  while(left<right){
-    let mid = Math.floor((left+right)/2)
+if (total <= m) {
+  console.log(data[n - 1])
+} else {
+  while (left <= right) {
+    let mid = Math.floor((left + right) / 2)
 
-    if(canGive(mid)){
-        answer = mid
-      left = mid+1
-    }else{
-      right = mid
+    if (canGive(mid)) {
+      left = mid + 1
+      answer = mid
+    } else {
+      right = mid - 1
     }
   }
   console.log(answer)
 }
-
