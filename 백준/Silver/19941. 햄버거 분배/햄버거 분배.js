@@ -11,26 +11,11 @@ const visited = data.map((val) => (val === "P" ? true : false))
 let answer = 0
 for (let i = 0; i < n; i++) {
   const cur = data[i]
-  let flag = false
   if (cur === "H") continue
-
-  // left
-  for (let j = i - k; j < i; j++) {
-    if (j >= 0 && !visited[j]) {
+  for (let j = i - k; j <= i+k; j++) {
+    if (j >= 0 && j<n && !visited[j]) {
       visited[j] = true
       answer += 1
-      flag = true
-      break
-    }
-  }
-  if (flag) continue
-
-  // right
-  for (let j = i + 1; j <= i + k; j++) {
-    if (j < n && !visited[j]) {
-      visited[j] = true
-      answer += 1
-      flag = true
       break
     }
   }
