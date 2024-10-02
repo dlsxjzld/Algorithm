@@ -10,39 +10,21 @@ const values = [Array.from({ length: m }, () => 0)].concat(
 )
 
 const dp = Array.from({ length: n + 1 }, () =>
-  Array.from({ length: m }, () => Array.from({ length: 3 }, () => Infinity)),
+  Array.from({ length: m+2 }, () => Array.from({ length: 3 }, () => 1000000)),
 )
 
-for (let i = 0; i < m; i++) {
+for (let i = 1; i <= m; i++) {
   for (let j = 0; j < 3; j++) {
     dp[0][i][j] = 0
   }
 }
-const dir = [
-  [1, 1],
-  [1, 0],
-  [1, -1],
-]
 
 for (let r = 1; r <= n; r++) {
-  for (let c = 0; c < m; c++) {
-    for (let direction = 0; direction < 3; direction++) {
-      const [pr, pc] = [r - dir[direction][0], c - dir[direction][1]]
+  for (let c = 1; c <= m; c++) {
+    dp[r][c][0] = values[r][c-1] + Math.min(dp[r-1][c-1][1],dp[r-1][c-1][2])
+    dp[r][c][1] = values[r][c-1] + Math.min(dp[r-1][c][0],dp[r-1][c][2])
+    dp[r][c][2] = values[r][c-1] + Math.min(dp[r-1][c+1][0],dp[r-1][c+1][1])
 
-      if (pr < 0 || pc < 0 || pr > n || pc >= m) continue
-      if (c === 0 && direction === 0) {
-        continue
-      } else if (c === m - 1 && direction === 2) {
-        continue
-      } else {
-        dp[r][c][direction] =
-          values[r][c] +
-          Math.min(
-            dp[pr][pc][(direction + 1) % 3],
-            dp[pr][pc][(direction + 2) % 3],
-          )
-      }
-    }
   }
 }
 
