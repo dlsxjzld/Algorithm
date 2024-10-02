@@ -15,5 +15,6 @@ while index<len(target):
     if(i == target[index]):
       index+=1
       if(index == len(target)):
-          print(num)
-          exit()
+          break
+
+print(num)
