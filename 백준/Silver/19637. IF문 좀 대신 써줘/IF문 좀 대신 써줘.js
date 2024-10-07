@@ -23,14 +23,14 @@ const answer = []
 const binarySearch = (s, e, array, target) => {
   let answer = null
 
-  while (s <= e) {
+  while (s < e) {
     let mid = Math.floor((s + e) / 2)
 
     if (array[mid][0] >= target) {
       answer = array[mid][1]
-      e = mid - 1
+      e = mid
     } else if (array[mid][0] < target) {
-      s = mid + 1
+      s = mid+1
     }
   }
   return answer
@@ -38,7 +38,7 @@ const binarySearch = (s, e, array, target) => {
 
 for (let target of values) {
   let s = 0
-  let e = n - 1
+  let e = n
 
   answer.push(binarySearch(s, e, medals, target))
 }
