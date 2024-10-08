@@ -4,91 +4,83 @@ const input = require("fs")
   .trim()
   .split("\n")
 
-class MinHeap {
+class Heap {
   constructor() {
-    this.heap = []
+    this.array = []
   }
 
-  enqueue(value) {
-    this.heap.push(value)
-    this.bubbleUp()
-  }
-
-  bubbleUp() {
-    let currentIdx = this.heap.length - 1
-
-    while (currentIdx > 0) {
-      let parentIdx = Math.floor((currentIdx - 1) / 2)
-      const current = this.heap[currentIdx]
-      const parent = this.heap[parentIdx]
-
-      if (current < parent) {
-        this.heap[parentIdx] = current
-        this.heap[currentIdx] = parent
-        currentIdx = parentIdx
-      } else {
-        break
+  push(value) {
+    this.array.push(value)
+    if (this.array.length > 0) {
+      let childIndex = this.array.length - 1
+      let parentIndex = Math.floor((childIndex - 1) / 2)
+      while (this.array[parentIndex] > this.array[childIndex]) {
+        let tmp = this.array[parentIndex]
+        this.array[parentIndex] = this.array[childIndex]
+        this.array[childIndex] = tmp
+        childIndex = parentIndex
+        parentIndex = Math.floor((childIndex - 1) / 2)
+        if (childIndex == 0) {
+          break
+        }
       }
     }
   }
 
-  size() {
-    return this.heap.length
-  }
-
-  dequeue() {
-    const Length = this.size()
-    if (Length === 0) return 0
-    if (Length === 1) return this.heap.pop()
-
-    const Min = this.heap[0]
-    const End = this.heap.pop()
-    this.heap[0] = End
-
-    let currentIdx = 0
-
-    while (true) {
-      let leftIdx = currentIdx * 2 + 1
-      let rightIdx = currentIdx * 2 + 2
-      let current = this.heap[currentIdx]
-      let leftChild = null
-      let rightChild = null
-      let swap = null
-      if (leftIdx < this.heap.length) {
-        leftChild = this.heap[leftIdx]
-        if (leftChild < current) {
-          swap = leftIdx
+  pop() {
+    if (this.array.length == 0) return null
+    else if (this.array.length == 1) return this.array.pop()
+    else {
+      let parentIndex = 0
+      const returnValue = this.array[parentIndex]
+      this.array[parentIndex] = this.array.pop()
+      while (parentIndex < this.array.length) {
+        let swap = null
+        let leftIndex = parentIndex * 2 + 1
+        let rightIndex = parentIndex * 2 + 2
+        if (this.array[leftIndex] != null) {
+          if (this.array[leftIndex] < this.array[parentIndex]) {
+            swap = leftIndex
+          }
         }
-      }
-      if (rightIdx < this.heap.length) {
-        rightChild = this.heap[rightIdx]
-        if (
-          (swap === null && rightChild < current) ||
-          (swap !== null && rightChild < leftChild)
-        ) {
-          swap = rightIdx
+
+        if (this.array[rightIndex] != null) {
+          if (
+            (swap == null &&
+              this.array[rightIndex] < this.array[parentIndex]) ||
+            (swap != null && this.array[swap] > this.array[rightIndex])
+          ) {
+            swap = rightIndex
+          }
         }
+        if (swap == null) {
+          break
+        }
+
+        let tmp = this.array[parentIndex]
+        this.array[parentIndex] = this.array[swap]
+        this.array[swap] = tmp
+        parentIndex = swap
       }
-      if (swap === null) break
-      this.heap[currentIdx] = this.heap[swap]
-      this.heap[swap] = current
-      currentIdx = swap
+      return returnValue
     }
-
-    return Min
   }
+  bubbleUp() {}
 }
 
-const minHeap = new MinHeap()
+const heap = new Heap()
 
 const nums = input.slice(1).map(Number)
 const answer = []
 
-for (let x of nums) {
-  if (x === 0) {
-    answer.push(minHeap.dequeue())
+for (let n of nums) {
+  if (n == 0) {
+    const target = heap.pop()
+
+    answer.push(target == null ? 0 : target)
   } else {
-    minHeap.enqueue(x)
+    heap.push(n)
   }
 }
+
 console.log(answer.join("\n"))
