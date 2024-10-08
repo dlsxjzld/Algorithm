@@ -34,7 +34,7 @@ class Heap {
       let parentIndex = 0
       const returnValue = this.array[parentIndex]
       this.array[parentIndex] = this.array.pop()
-      while (parentIndex < this.array.length) {
+      while (true) {
         let swap = null
         let leftIndex = parentIndex * 2 + 1
         let rightIndex = parentIndex * 2 + 2
@@ -65,7 +65,6 @@ class Heap {
       return returnValue
     }
   }
-  bubbleUp() {}
 }
 
 const heap = new Heap()
