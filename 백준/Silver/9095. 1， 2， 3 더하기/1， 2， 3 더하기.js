@@ -4,20 +4,18 @@ const input = require("fs")
   .trim()
   .split("\n")
 
-const T = Number(input[0])
-const dp = Array(11).fill(0)
-dp[1] = 1
-dp[2] = 2
-dp[3] = 4
+  const t = Number(input[0])
+  const nums = input.slice(1).map(Number)
 
-for (let j = 4; j < 11; j++) {
-  dp[j] = dp[j - 1] + dp[j - 2] + dp[j - 3]
-}
-const answer = []
+  const dp =Array.from({length:11},()=>0)
+  dp[1] = 1
+  dp[2] = 2
+  dp[3] = 4
 
-for (let i = 1; i < T + 1; i++) {
-  const num = Number(input[i])
-  answer.push(dp[num])
-}
+  for(let i=4;i<11;i++){
+    dp[i] = dp[i-1] + dp[i-2] + dp[i-3]
+  }
 
-console.log(answer.join("\n"))
+  for(let num of nums){
+    console.log(dp[num])
+  }
