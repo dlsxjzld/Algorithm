@@ -15,14 +15,14 @@ class MinHeap {
 
     if (this.array.length >= 2) {
       let currentIndex = this.array.length - 1
-      let parentIndex = Math.floor((currentIndex-1) / 2)
+      let parentIndex = Math.floor((currentIndex - 1) / 2)
       while (parentIndex >= 0) {
         if (this.array[parentIndex] > this.array[currentIndex]) {
           let tmp = this.array[parentIndex]
           this.array[parentIndex] = this.array[currentIndex]
           this.array[currentIndex] = tmp
           currentIndex = parentIndex
-          parentIndex = Math.floor((currentIndex-1) / 2)
+          parentIndex = Math.floor((currentIndex - 1) / 2)
         } else {
           break
         }
@@ -79,10 +79,14 @@ rl.on("line", function (line) {
     index = n
     return
   }
-  line.split(' ').forEach((value) => {
-    minHeap.push(parseInt(value));
-    if(minHeap.getSize() > n) minHeap.pop();
-});
+  const nums = line.split(" ")
+
+  for (let num of nums) {
+    minHeap.push(parseInt(num))
+    if (minHeap.getSize() > n) {
+      minHeap.pop()
+    }
+  }
 
   index--
   if (index == 0) {
@@ -92,4 +96,3 @@ rl.on("line", function (line) {
   console.log(minHeap.pop())
   process.exit()
 })
-
