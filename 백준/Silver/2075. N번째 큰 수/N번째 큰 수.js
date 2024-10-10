@@ -1,87 +1,95 @@
-  const readline = require('readline');
+// N×N의 표에 수 N2개 채워져 있다.
+// 채워진 수에는 한 가지 특징이 있는데, 모든 수는 자신의 한 칸 위에 있는 수보다 크다는 것이다.
 
-    const rl = readline.createInterface({
-        input: process.stdin,
-        output: process.stdout
-    });
-    class MinHeap {
-        constructor() {
-            this.heap = [null];
+const readLine = require("readline")
+const rl = readLine.createInterface({
+  input: process.stdin,
+  output: process.stdout,
+})
+class MinHeap {
+  constructor() {
+    this.array = []
+  }
+  push(value) {
+    this.array.push(value)
 
+    if (this.array.length >= 2) {
+      let currentIndex = this.array.length - 1
+      let parentIndex = Math.floor((currentIndex-1) / 2)
+      while (parentIndex >= 0) {
+        if (this.array[parentIndex] > this.array[currentIndex]) {
+          let tmp = this.array[parentIndex]
+          this.array[parentIndex] = this.array[currentIndex]
+          this.array[currentIndex] = tmp
+          currentIndex = parentIndex
+          parentIndex = Math.floor((currentIndex-1) / 2)
+        } else {
+          break
         }
-
-        Push(item) {
-            let cur = this.heap.length;
-            while (cur > 1) {
-                let parent = Math.floor(cur / 2);
-                if (item < this.heap[parent]) {
-                    this.heap[cur] = this.heap[parent];
-                    cur = parent;
-                } else break;
-            }
-            this.heap[cur] = item;
-        }
-
-        remove() {
-            const removeItem = this.heap[1];
-            if (this.heap.length > 2) {
-                this.heap[1] = this.heap[this.heap.length - 1];
-                this.heap.pop();
-                let cur = 1;
-                let leftChild = cur * 2;
-                let rightChild = cur * 2 + 1;
-                while (this.heap[leftChild]) {
-                    let CompareChild = leftChild;
-                    if (this.heap[rightChild]) {
-                        if (this.heap[leftChild] > this.heap[rightChild]) {
-                            CompareChild = rightChild;
-                        }
-                    }
-                    if (this.heap[CompareChild] < this.heap[cur]) {
-                        [this.heap[CompareChild], this.heap[cur]] = [this.heap[cur], this.heap[CompareChild]];
-                        cur = CompareChild;
-                    }else break;
-                    leftChild = cur * 2;
-                    rightChild = cur * 2 + 1;
-                }
-
-            }else if (this.heap.length === 2) {
-                this.heap.pop();
-            } else {
-                return 0;
-            }
-            return removeItem;
-        }
-
-        getSize() {
-            return this.heap.length - 1;
-        }
-
+      }
     }
+  }
+  pop() {
+    if (this.array.length == 0) return null
+    if (this.array.length == 1) return this.array.pop()
+    const returnValue = this.array[0]
+    const endValue = this.array.pop()
+    this.array[0] = endValue
+    let currentIndex = 0
+    while (currentIndex <= this.array.length - 1) {
+      let leftIndex = currentIndex * 2 + 1
+      let rightIndex = currentIndex * 2 + 2
+      let swap = null
 
-    const minHeap = new MinHeap();
-
-	// 다른 코드를 참조하여 작성
-	// 입력 받은 줄의 수를 세기 위한 변수
-    let N = -1;
-    rl.on("line", function (line) {
-      	// 입력의 첫번째 줄인 행렬의 사이즈를 나타내는 값 저장
-        if (N === -1) {
-            N = parseInt(line);
-            n = N;
-            return;
+      if (this.array.length - 1 >= leftIndex) {
+        if (this.array[leftIndex] < this.array[currentIndex]) {
+          swap = leftIndex
         }
-      	// 기존 for문과 동일 
-      	// minHeap에 행렬 Push 후 길이에 따라 minHeap에서 값 제거
-        line.split(' ').forEach((value) => {
-            minHeap.Push(parseInt(value));
-            if(minHeap.getSize() > n) minHeap.remove();
-        });
-      	// 한줄이 끝날 때마다 N 감소
-        N--;
-      	// 만약 모든 줄 다 봤으면 종료
-        if (N === 0) rl.close();
-    }).on("close", function () {
-        console.log(minHeap.remove());
-        process.exit();
-    });
+      }
+      if (this.array.length - 1 >= rightIndex) {
+        if (
+          (swap !== null && this.array[leftIndex] > this.array[rightIndex]) ||
+          (swap == null && this.array[rightIndex] < this.array[currentIndex])
+        ) {
+          swap = rightIndex
+        }
+      }
+
+      if (swap == null) {
+        break
+      }
+      let tmp = this.array[currentIndex]
+      this.array[currentIndex] = this.array[swap]
+      this.array[swap] = tmp
+      currentIndex = swap
+    }
+    return returnValue
+  }
+  getSize() {
+    return this.array.length
+  }
+}
+const minHeap = new MinHeap()
+
+let index = -1
+let n = 0
+rl.on("line", function (line) {
+  if (index == -1) {
+    n = Number(line)
+    index = n
+    return
+  }
+  line.split(' ').forEach((value) => {
+    minHeap.push(parseInt(value));
+    if(minHeap.getSize() > n) minHeap.pop();
+});
+
+  index--
+  if (index == 0) {
+    rl.close()
+  }
+}).on("close", function () {
+  console.log(minHeap.pop())
+  process.exit()
+})
+
