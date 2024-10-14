@@ -5,44 +5,39 @@ const input = require("fs")
   .split("\n")
 
 const [n, k] = input[0].split(" ").map(Number)
-const MAX = 100_001
-
-const visited = Array(MAX).fill(0)
-
-visited[n] = 1
+const MAX = 100_000
+const graph = Array.from({ length: MAX + 1 }, () => -1)
 
 const queue = [n]
+graph[n] = 0
 let index = 0
-
 while (queue.length > index) {
-  const curr = queue[index++]
-  if (curr === k) {
-    continue
-  }
+  const cur = queue[index++]
+  if (cur == k) continue
 
-  for (let next of [curr - 1, curr + 1, curr * 2]) {
-    if (next < 0 || next >= MAX) continue
-    if (!visited[next]) {
-      if (next === curr * 2) {
-        visited[next] = visited[curr]
-      } else if (next === curr - 1 || next === curr + 1) {
-        visited[next] = visited[curr] + 1
+  for (let next of [cur - 1, cur + 1, cur * 2]) {
+    if (next < 0 || next > MAX) continue
+    if (graph[next] == -1) {
+      if (next == cur * 2) {
+        graph[next] = graph[cur]
+      } else {
+        graph[next] = graph[cur] + 1
       }
       queue.push(next)
     } else {
-      if (next === curr * 2) {
-        if (visited[next] > visited[curr]) {
-          visited[next] = visited[curr]
-          queue.push(next)
+      if (next == cur * 2) {
+        if (graph[next] > graph[cur]) {
+          graph[next] = graph[cur]
+            queue.push(next)
         }
-      } else if (next === curr - 1 || next === curr + 1) {
-        if (visited[next] > visited[curr] + 1) {
-          visited[next] = visited[curr] + 1
-          queue.push(next)
+      } else {
+        if (graph[next] > graph[cur]+1) {
+          graph[next] = graph[cur] + 1
+            queue.push(next)
         }
       }
     }
   }
 }
 
-console.log(visited[k] - 1)
+console.log(graph[k])
