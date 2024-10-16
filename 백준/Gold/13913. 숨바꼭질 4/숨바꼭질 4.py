@@ -2,35 +2,35 @@ import sys
 from collections import deque
 input = sys.stdin.readline
 
-n, k = map(int, input().split())
+n,k = map(int,input().split())
+MAX = 100_001
+graph = [-1] * MAX
+path = [-1] * MAX
 
-graph = [0] * 100001
-path = [0] * 100001
+def bfs (start,end,graph,path):
+  queue = deque([start])
+  graph[start] = 0
 
+  while queue:
+    cur = queue.popleft()
+    if cur == end: return
 
-def check(end):
-    result = []
-    tmp = end
-    for _ in range(graph[end]+1):
-        result.append(tmp)
-        tmp = path[tmp]
+    for nx in [cur-1,cur+1,cur*2]:
+      if nx<0 or nx>=MAX or graph[nx] !=-1: continue
+      queue.append(nx)
+      graph[nx] = graph[cur] +1
+      path[nx] = cur
 
-    print(' '.join(map(str, result[::-1])))
+def getPath(path,start,cnt):
+  answer = [str(start)]
+  index = start
+  for i in range(cnt):
+    nx = path[index]
+    answer.append(str(nx))
+    index = nx
+  return ' '.join(answer[::-1])
 
+bfs(n,k,graph,path)
+print(graph[k])
+print(getPath(path,k,graph[k]))
 
-def bfs(start, end):
-    queue = deque([start])
-    while queue:
-        x = queue.popleft()
-        if x == end:
-            print(graph[end])
-            break
-        for nx in [x-1, x+1, 2*x]:
-            if 0 <= nx <= 100000 and graph[nx] == 0:
-                graph[nx] = graph[x] + 1
-                path[nx] = x
-                queue.append(nx)
-
-
-bfs(n, k)
-check(k)
