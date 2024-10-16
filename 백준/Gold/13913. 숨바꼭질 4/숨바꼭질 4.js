@@ -5,34 +5,38 @@ const input = require("fs")
   .split("\n")
 
 const [n, k] = input[0].split(" ").map(Number)
-const MAX = 100001
-const time = Array.from({ length: MAX }, () => -1)
-const path = Array.from({ length: MAX }, () => Number.MAX_SAFE_INTEGER)
+const MAX = 100_000
+const visited = Array.from({ length: MAX + 1 }, () => -1)
 
-time[n] = 0
+const path = Array.from({ length: MAX + 1 }, () => -1)
 
-const bfs = () => {
-  const queue = [n]
+const bfs = (start, end, visited, path) => {
+  const queue = [start]
   let index = 0
 
+  visited[start] = 0
+
   while (queue.length > index) {
-    const curr = queue[index++]
-    for (let next of [curr - 1, curr + 1, curr * 2]) {
-      if (next >= 0 && next < MAX && time[next] === -1) {
-        queue.push(next)
-        time[next] = time[curr] + 1
-        path[next] = curr
-      }
+    const cur = queue[index++]
+    if (cur == end) continue
+
+    for (let nx of [cur - 1, cur + 1, cur * 2]) {
+      if (nx < 0 || nx > MAX || visited[nx] !== -1) continue
+      queue.push(nx)
+      visited[nx] = visited[cur] + 1
+      path[nx] = cur
     }
   }
 }
-bfs()
-console.log(time[k])
-const answer = [k]
-let tmp = path[k]
-for (let i = 0; i < time[k]; i++) {
-  answer.push(tmp)
-  tmp = path[tmp]
+
+bfs(n, k, visited,path)
+let answer = `${k}`
+let start = k
+for(let i=visited[k];i>0;i--){
+  const next = path[start]
+  answer = `${next} ` + answer
+  start = next
 }
 
-console.log(answer.reverse().join(" "))
+console.log(visited[k])
+console.log(answer)
