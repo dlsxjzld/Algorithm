@@ -5,14 +5,14 @@ const input = require("fs")
   .split("\n")
 
 const [n, k] = input[0].split(" ").map(Number)
-
+const bags = input.slice(1).map((row) => row.split(" ").map(Number))
 const dp = Array.from({ length: k + 1 }, () => 0)
 
-for (let i = 1; i <= n; i++) {
-  const [w, v] = input[i].split(" ").map(Number)
-  for (let weight = k; weight >= w; weight--) {
-    dp[weight] = Math.max(dp[weight], dp[weight - w] + v)
+for (let [w, v] of bags) {
+  for (let start = k; start >= w; start--) {
+    if (dp[start] < dp[start - w] + v) {
+      dp[start] = dp[start - w] + v
+    }
   }
 }
-
-console.log(dp[k])
+console.log(Math.max(...dp))
