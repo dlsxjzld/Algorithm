@@ -4,34 +4,47 @@ const input = require("fs")
   .trim()
   .split("\n")
 
-const s = input[0]
-const t = input[1].split("")
+const S = input[0].split("")
+const T = input[1].split("")
 
-// 문자열의 뒤에 A를 추가
-// 문자열의 뒤에 B를 추가하고 문자열을 뒤집기
-let answer = 0
-const dfs = (target, curr) => {
-  if (target.length === curr.length) {
-    if (curr.join("") === target) {
-      answer = 1
+// 맨뒤가 A이고
+//  맨 앞이 A
+//  -> pop
+//  맨 앞이 B
+//  -> 뒤집고 pop
+//  -> pop
+
+// 맨뒤가 B이고
+//  맨 앞이 B
+//  -> 뒤집고 pop
+const solution = (T, S) => {
+  const answer = []
+  const getT = (T, S) => {
+
+    if (T.length > S.length) {
+      if (T.at(-1) == "B") {
+        if (T[0] == "B") {
+          const tmpT = [...T]
+          tmpT.reverse()
+          getT(tmpT.slice(0, -1), S)
+        }
+      } else {
+        if (T[0] == "A") {
+          getT(T.slice(0, -1), S)
+        } else {
+          const tmpT = [...T]
+
+          getT(tmpT.slice(0, -1), S)
+          tmpT.reverse()
+          getT(tmpT.slice(0, -1), S)
+        }
+      }
+    }else{
+        answer.push(T.join("") == S.join(""))
     }
-    return
   }
-  if (curr[curr.length - 1] === "A") {
-    const next = [...curr]
-    next.pop()
-    dfs(target, next)
-    const reversedNext = [...curr].reverse()
-    if (reversedNext[reversedNext.length - 1] === "B") {
-      reversedNext.pop()
-      dfs(target, reversedNext)
-    }
-  } else if (curr[0] === "B") {
-    const reversedNext = [...curr].reverse()
-    reversedNext.pop()
-    dfs(target, reversedNext)
-  }
+  getT(T, S)
+  return answer.some((val) => val === true)
 }
 
-dfs(s, t)
-console.log(answer)
+console.log(Number(solution(T, S)))
