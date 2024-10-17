@@ -23,7 +23,7 @@ answer = max(answer,cnt)
 for i in range(1,N):
   check[sushi[i-1]] -= 1
   if(check[sushi[i-1]] == 0):
-    del check[sushi[i-1]]
+    check.pop(sushi[i-1])
     cnt -=1
 
   if(check.get(sushi[(i+k-1)%N]) == None):
