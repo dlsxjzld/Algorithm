@@ -13,15 +13,18 @@ const input = require("fs")
 const S = input[0].split("")
 const T = input[1].split("")
 
+let isReversed = false;
+while (T.length > S.length) {
+  let idx = T[isReversed ? 0 : T.length - 1];
 
-while(T.length !== S.length){
-
-  if(T.at(-1) == 'A'){
-    T.pop()
+  if (isReversed) {
+    T.shift();
+  } else {
+    T.pop();
   }
-  else if(T.at(-1) == 'B'){
-    T.pop()
-    T.reverse()
-  }
+  if (idx === "B") isReversed = !isReversed;
 }
-console.log(Number(T.join('') == S.join('')))
+
+if (isReversed) T.reverse();
+
+console.log(S.join("") === T.join("") ? 1 : 0);
