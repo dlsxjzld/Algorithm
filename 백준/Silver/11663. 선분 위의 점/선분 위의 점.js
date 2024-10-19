@@ -23,17 +23,13 @@ const findStartIndex = (dots, lineValue) => {
   let answer = null
   while (start <= end) {
     let mid = Math.floor((start + end) / 2)
-    if (dots[mid] > lineValue) {
+    if (dots[mid] >= lineValue) {
       // 우리가 찾는 값: lineValue 보다 딱 하나 더 작은 dots의 인덱스
       answer = mid - 1
       end = mid - 1
     } else if (dots[mid] < lineValue) {
       start = mid + 1
-    } else {
-      // 같으면
-      answer = mid - 1
-      break
-    }
+    } 
   }
   return answer
 }
@@ -45,15 +41,11 @@ const findEndIndex = (dots, lineValue) => {
     let mid = Math.floor((start + end) / 2)
     if (dots[mid] > lineValue) {
       end = mid - 1
-    } else if (dots[mid] < lineValue) {
+    } else if (dots[mid] <= lineValue) {
       // 우리가 찾는 값: lineValue 보다 딱 하나 더 큰 dots의 인덱스
       answer = mid + 1
       start = mid + 1
-    } else {
-      // 같으면
-      answer = mid + 1
-      break
-    }
+    } 
   }
   return answer
 }
@@ -61,6 +53,6 @@ for (let [start, end] of lines) {
   const sIdx = findStartIndex(dots, start)
   const eIdx = findEndIndex(dots, end)
 
-  answer.push((sIdx == null || eIdx == null) ? 0 :  eIdx - sIdx - 1)
+  answer.push(sIdx == null || eIdx == null ? 0 : eIdx - sIdx - 1)
 }
-console.log(answer.join('\n'))
+console.log(answer.join("\n"))
