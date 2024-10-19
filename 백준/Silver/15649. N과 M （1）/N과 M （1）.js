@@ -4,25 +4,25 @@ const input = require("fs")
   .trim()
   .split("\n")
 
-
-const getPermutation = (origin, targetCnt) => {
-  if (targetCnt == 1) {
-    return origin.map((val) => [val])
+const [N, M] = input[0].split(" ").map(Number)
+const array = []
+const visited = Array.from({ length: N + 1 }, () => false)
+const answer = []
+const backTracking = (array, visited) => {
+  if (array.length == M) {
+    answer.push(array.join(" "))
+    return
   }
-  const result = []
-  origin.forEach((fixed, i) => {
-    const rest = [...origin.slice(0, i), ...origin.slice(i + 1)]
-    const permutation = getPermutation(
-      rest,
-      targetCnt-1,
-    )
-    result.push(...permutation.map((val)=> [fixed,...val]))
-  })
-  return result
+  for (let i = 1; i <= N; i++) {
+    if (!visited[i]) {
+      array.push(i)
+      visited[i] = true
+      backTracking(array, visited)
+      visited[i] = false
+      array.pop()
+    }
+  }
 }
 
-const [N, M] = input[0].split(" ").map(Number)
-
-const numbers = Array.from({ length: N }, (_, i) => i + 1)
-const result = getPermutation(numbers, M)
-console.log(result.map((row)=>row.join(' ')).join('\n'))
+backTracking(array, visited)
+console.log(answer.join('\n'))
