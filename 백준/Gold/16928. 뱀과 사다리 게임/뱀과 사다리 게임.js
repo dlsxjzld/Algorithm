@@ -5,48 +5,58 @@ const input = require("fs")
   .split("\n")
 
 const [N, M] = input[0].split(" ").map(Number)
-
-const 사다리 = {}
-const 뱀 = {}
-
-input.slice(1, 1 + N).forEach((data) => {
-  const [start, end] = data.split(" ").map(Number)
-  사다리[start] = end
+const boardAndSnake = {}
+input.slice(1).forEach((row) => {
+  const [s, e] = row.split(" ")
+  boardAndSnake[s] = Number(e)
 })
-
-input.slice(1 + N).forEach((data) => {
-  const [start, end] = data.split(" ").map(Number)
-  뱀[start] = end
-})
-
+const bridge = input.slice(1, 1 + N).map((row) => row.split(" ").map(Number))
+const snake = input.slice(1 + N).map((row) => row.split(" ").map(Number))
+// 주사위 나올 수 있는 값 1~6
 const board = Array.from({ length: 101 }, () => 0)
 
-const solution = () => {
-  const queue = [[1, 0]] // 시작지점, 주사위 굴린 횟수
+// 2->93 : 1->2, 93 -> 99 -> 100 (3번)
+// 4->99 : 1->4, 99 -> 100 (2번)
+// 모든 경우 다 해야할 것 같음
+const answer = []
+
+const bfs = (boardAndSnake, answer) => {
+  const queue = [1] // start, cnt
+  // cnt = 0  주사위 굴린 횟수
   let index = 0
 
   while (queue.length > index) {
-    const [curr, cnt] = queue[index++]
-    for (let i = 1; i <= 6; i++) {
-      const next = curr + i
-      if (next > 100) continue // 주사위가 100 넘어가면 이동 불가
-      if (board[next] === 0) {
-        // 아직 도착 안했다면
-        if (사다리[next] !== undefined) {
-          queue.push([사다리[next], cnt + 1])
-          board[next] = cnt + 1
-          board[사다리[next]] = cnt + 1
-        } else if (뱀[next] !== undefined) {
-          queue.push([뱀[next], cnt + 1])
-          board[next] = cnt + 1
-          board[뱀[next]] = cnt + 1
-        } else {
-          queue.push([next, cnt + 1])
-          board[next] = cnt + 1
+    const cur = queue[index++]
+    if (cur == 100) {
+      answer.push(board[100])
+      continue
+    }
+
+    for (let move = 1; move <= 6; move++) {
+      const nx = cur + move
+
+      if (nx > 100) continue
+      if (boardAndSnake[nx] != null) {
+        if (
+          board[boardAndSnake[nx]] == 0 ||
+          (board[boardAndSnake[nx]] !== 0 &&
+            board[boardAndSnake[nx]] > board[cur])
+        ) {
+          board[nx] = board[cur]+1  
+          queue.push(boardAndSnake[nx])
+          board[boardAndSnake[nx]] = board[nx]
         }
-      } 
+      } else {
+        if (board[nx] == 0 || board[nx] > board[cur] + 1) {
+          queue.push(nx)
+          board[nx] = board[cur] + 1
+        }
+      }
+
     }
   }
 }
-solution()
-console.log(board[100])
+bfs(boardAndSnake, answer)
+
+
+console.log(Math.min(...answer))
