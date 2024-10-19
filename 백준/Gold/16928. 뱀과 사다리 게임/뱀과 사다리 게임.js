@@ -23,10 +23,10 @@ const answer = []
 const bfs = (boardAndSnake, answer) => {
   const queue = [1] // start, cnt
   // cnt = 0  주사위 굴린 횟수
+  let index = 0
 
-
-  while (queue.length > 0) {
-    const cur = queue.shift()
+  while (queue.length > index) {
+    const cur = queue[index++]
     if (cur == 100) {
       answer.push(board[100])
       continue
@@ -35,28 +35,19 @@ const bfs = (boardAndSnake, answer) => {
     for (let move = 1; move <= 6; move++) {
       const nx = cur + move
 
-      if (nx > 100) continue
+      if (nx > 100 || board[nx] !== 0) continue
+      board[nx] = board[cur] + 1
       if (boardAndSnake[nx] != null) {
-        if (
-          board[boardAndSnake[nx]] == 0 ||
-          (board[boardAndSnake[nx]] !== 0 &&
-            board[boardAndSnake[nx]] > board[cur])
-        ) {
-          board[nx] = board[cur]+1  
+        if (board[boardAndSnake[nx]] == 0) {
           queue.push(boardAndSnake[nx])
           board[boardAndSnake[nx]] = board[nx]
         }
       } else {
-        if (board[nx] == 0 || board[nx] > board[cur] + 1) {
-          queue.push(nx)
-          board[nx] = board[cur] + 1
-        }
+        queue.push(nx)
       }
-
     }
   }
 }
 bfs(boardAndSnake, answer)
-
 
 console.log(Math.min(...answer))
