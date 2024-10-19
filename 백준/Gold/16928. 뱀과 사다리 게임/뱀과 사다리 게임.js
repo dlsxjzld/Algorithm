@@ -23,10 +23,10 @@ const answer = []
 const bfs = (boardAndSnake, answer) => {
   const queue = [1] // start, cnt
   // cnt = 0  주사위 굴린 횟수
-  let index = 0
 
-  while (queue.length > index) {
-    const cur = queue[index++]
+
+  while (queue.length > 0) {
+    const cur = queue.shift()
     if (cur == 100) {
       answer.push(board[100])
       continue
