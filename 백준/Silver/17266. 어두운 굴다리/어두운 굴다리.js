@@ -4,24 +4,27 @@ const input = require("fs")
   .trim()
   .split("\n")
 
-const n = Number(input[0]) // 0 ~ n
-const m = Number(input[1])
-const x = [0, ...input[2].split(" ").map(Number), n]
-// 이분탐색으로 높이를 구하고 이 높이가 모든 굴다리르 비출 수 있는지 확인해야함
-// 높이의 최댓값은 n
+// 모든 길 0~N
+// 최소한의 높이
 
-// 높이가 안되는 경우
-// x[1] - 0 > height
-// x[n-1] - x[n-2] > height
-// (x[2] - x[1])/2 > height , (x[3] - x[2])/2 > height...
-const canLight = (height) => {
-  if (x[1]-x[0] > height) {
-    return false
-  }
-  if (x[x.length-1] - x[x.length-2] > height) {
-    return false
-  }
-  for (let i = 1; i <= m; i++) {
+const N = Number(input[0])
+const M = Number(input[1])
+const x = input[2].split(" ").map(Number)
+
+// 높이 설정 -> 이분탐색
+// 이 높이가 모든 가로등에 대입했을 때 되는지 확인
+//  (index(현재 가로등 위치)) - (index-1)  > height 면 안됨
+//  (index+1) - (index(현재 가로등 위치))  > height 면 안됨
+//  가로등 index = 0 일 때 0까지 거리 > height 면 안됨
+//  가로등 index = M-1 일 때 N까지 거리 > height 면 안됨
+// 가로등이 1개
+// 가로등이 2개
+// 가로등이 M개
+
+const canLight = (x, N, height) => {
+  if (x[0] > height) return false
+  if (N - x[x.length - 1] > height) return false
+  for (let i = 0; i <= x.length - 2; i++) {
     if ((x[i + 1] - x[i]) / 2 > height) {
       return false
     }
@@ -29,18 +32,21 @@ const canLight = (height) => {
   return true
 }
 
-let start = 0
-let end = n
-let answer = n
-while (start < end) {
-  let mid = Math.floor((start + end) / 2)
+const bs = (start, end, x, N) => {
+  let answer = N
+  
 
-  if (canLight(mid)) {
-    end = mid
-    answer = mid
-  } else {
-    start = mid + 1
+  while (start <= end) {
+    let mid = Math.floor((start + end) / 2)
+
+    if (canLight(x, N, mid)) {
+      answer = mid
+      end = mid - 1
+    } else {
+      start = mid + 1
+    }
   }
+  return answer
 }
 
-console.log(answer)
+console.log(bs(0, N, x, N))
