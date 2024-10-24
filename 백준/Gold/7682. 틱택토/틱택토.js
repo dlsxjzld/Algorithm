@@ -66,9 +66,8 @@ while (true) {
     const oWin = checkWin("O", "X", line)
     if (xWin && !oWin) {
       answer.push("valid")
-    } else {
-      answer.push("invalid")
-    }
+        continue
+    } 
   } else if (xCnt === oCnt && oCnt < 5 && oCnt >= 3) {
     // O 이길 때만 체크 -> X이기거나 비기면 안됨
 
@@ -76,23 +75,21 @@ while (true) {
     const oWin = checkWin("O", "X", line)
     if (!xWin && oWin) {
       answer.push("valid")
-    } else {
-      answer.push("invalid")
-    }
+        continue
+    } 
   } else if (xCnt === 5 && xCnt === oCnt + 1) {
     // X 이길 때, 비길 때 체크 -> O이기면 안됨
 
     const xWin = checkWin('X','O',line)
     const oWin = checkWin("O", "X", line)
 
-    if ((xWin && !oWin) || (xWin && oWin)) {
+    if ((xWin)) {
       answer.push("valid")
-    } else {
-      answer.push("invalid")
+        continue
     }
-  } else {
-    answer.push("invalid")
   }
+    answer.push("invalid")
+  
 }
 
 console.log(answer.join("\n"))
