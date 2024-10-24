@@ -16,19 +16,25 @@ const answer = []
 // 사이클 되면 answer에 값 추가
 
 const dfs = (start, target) => {
-  if (!visited[start]) {
-    visited[start] = true
-    dfs(secondLine[start], target)
-    visited[start] = false
+    const next = secondLine[start]
+  if (!visited[next]) {
+    visited[next] = true
+    dfs(next, target)
+    visited[next] = false
   } else {
-    if (start === target) {
+
+    if (next === target) {
       answer.push(target)
     }
   }
 }
 
 for (let i = 1; i <= n; i++) {
-  dfs(i, i)
+    if(!visited[i]){
+       visited[i] = true
+       dfs(i, i)   
+        visited[i] = false
+    }
 }
 
 console.log(answer.length)
