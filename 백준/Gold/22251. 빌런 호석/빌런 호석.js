@@ -40,13 +40,13 @@ const LED = {
 const answer = new Set([])
 const convertedX = ("0".repeat(Number(K) - X.length) + X).split("")
 
-const change = (origin, currentP, numbers, currentIndex) => {
-
+const change = (currentP, numbers, currentIndex) => {
   if (currentP === 0 || (currentP >= 0 && currentIndex === Number(K))) {
     // 마지막 자리까지 왔으면
     const target = Number(numbers.join(""))
-    if (1<=target&& target <= N && target !== Number(X)) {
-      answer.add(Number(numbers.join("")))
+
+    if (target > 0 && target <= N && target != Number(X)) {
+      answer.add(numbers.join(""))
     }
     return
   }
@@ -57,21 +57,18 @@ const change = (origin, currentP, numbers, currentIndex) => {
       (val, index) => val !== LED[i][index],
     ).length
     if (cnt <= currentP) {
+        const newArray = [...numbers]
+        newArray[currentIndex] = i.toString()
       change(
-        origin,
         currentP - cnt,
-        [
-          ...numbers.slice(0, currentIndex),
-          i.toString(),
-          ...numbers.slice(currentIndex + 1),
-        ],
+        newArray,
         currentIndex + 1,
       )
     }
   }
 
-  change(origin, currentP, numbers, currentIndex + 1)
+  change(currentP, numbers, currentIndex + 1)
 }
 
-change(convertedX, Number(P), [...convertedX], 0)
+change(P, convertedX, 0)
 console.log(answer.size)
