@@ -41,7 +41,7 @@ const answer = new Set([])
 const convertedX = ("0".repeat(Number(K) - X.length) + X).split("")
 
 const change = (currentP, numbers, currentIndex) => {
-  if (currentP === 0 || (currentP >= 0 && currentIndex === Number(K))) {
+  if (currentP === 0 || (currentIndex === Number(K))) {
     // 마지막 자리까지 왔으면
     const target = Number(numbers.join(""))
 
@@ -52,7 +52,8 @@ const change = (currentP, numbers, currentIndex) => {
   }
   const currentChar = numbers[currentIndex]
 
-  for (let i = 0; i <= 9; i++) {
+  if(currentP >=1){
+      for (let i = 0; i <= 9; i++) {
     const cnt = LED[currentChar].filter(
       (val, index) => val !== LED[i][index],
     ).length
@@ -65,9 +66,12 @@ const change = (currentP, numbers, currentIndex) => {
         currentIndex + 1,
       )
     }
+      }
+      change(currentP, numbers, currentIndex + 1)
   }
+  
 
-  change(currentP, numbers, currentIndex + 1)
+  
 }
 
 change(P, convertedX, 0)
