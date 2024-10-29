@@ -14,17 +14,7 @@ for (let i = 0; i < n; i++) {
   dp[coins[i]] = 1
 
   for (let j = coins[i]; j <= k; j++) {
-    if (j % coins[i] === 0) {
-      dp[j] = Math.min(dp[j], j / coins[i], dp[j - coins[i]] + 1)
-    } else {
-      const nums = Math.floor(j / coins[i])
-
-      dp[j] = Math.min(
-        dp[j],
-        nums + dp[j - nums * coins[i]],
-        dp[j - coins[i]] + 1,
-      )
-    }
+     dp[j] = Math.min(dp[j], dp[j - coins[i]] + 1)
   }
 
 }
