@@ -4,65 +4,71 @@ const input = require("fs")
   .trim()
   .split("\n")
 
-const [n, l, r] = input[0].split(" ").map(Number)
-let graph = input.slice(1, 1 + n).map((row) => row.split(" ").map(Number))
-
-const dx = [0, 0, 1, -1]
-const dy = [1, -1, 0, 0]
+const [N, L, R] = input[0].split(" ").map(Number)
+const countries = input.slice(1).map((row) => row.split(" ").map(Number))
 let day = 0
+const move = [
+  [1, 0],
+  [-1, 0],
+  [0, -1],
+  [0, 1],
+]
+
+const bfs = (sx, sy, N, L, R, graph, visited) => {
+  const queue = [[sx, sy]]
+  let index = 0
+
+  while (queue.length > index) {
+    const [x, y] = queue[index++]
+
+    for (let i = 0; i < 4; i++) {
+      const nx = x + move[i][0]
+      const ny = y + move[i][1]
+
+      if (nx < 0 || ny < 0 || nx >= N || ny >= N || visited[nx][ny]) continue
+      // graph[nx][ny] 와 차이가 L이상 R이하면 방문해야할 배열에 넣기
+      const diff = Math.abs(graph[x][y] - graph[nx][ny])
+      if (diff < L || diff > R) continue
+
+      visited[nx][ny] = true
+      queue.push([nx, ny])
+    }
+  }
+  return queue
+}
 
 while (true) {
-  let flag = false
-  const visited = Array.from({ length: n }, () =>
-    Array.from({ length: n }, () => false),
-  )
-
-  for (let i = 0; i < n; i++) {
-    for (let j = 0; j < n; j++) {
+  const visited = Array.from({ length: N }, () =>
+    Array.from({ length: N }, () => false),
+  ) // diff 비교해야함
+  const targets = []
+  for (let i = 0; i < N; i++) {
+    for (let j = 0; j < N; j++) {
       if (!visited[i][j]) {
-        const queue = [[i, j]]
         visited[i][j] = true
-        const countries = [[i, j]]
-        let people = graph[i][j]
 
-        const dx = [0, 0, 1, -1]
-        const dy = [1, -1, 0, 0]
+        const needVisit = bfs(i, j, N, L, R, countries, visited)
 
-        while (queue.length > 0) {
-          const [x, y] = queue.shift()
-
-          for (let i = 0; i < 4; i++) {
-            const nx = x + dx[i]
-            const ny = y + dy[i]
-
-            if (
-              nx >= 0 &&
-              ny >= 0 &&
-              nx < n &&
-              ny < n &&
-              !visited[nx][ny] &&
-              Math.abs(graph[x][y] - graph[nx][ny]) >= l &&
-              Math.abs(graph[x][y] - graph[nx][ny]) <= r
-            ) {
-              visited[nx][ny] = true
-              queue.push([nx, ny])
-              countries.push([nx, ny])
-              people += graph[nx][ny]
-              flag = true
-            }
-          }
+        if (needVisit.length !== 1) {
+          targets.push([...needVisit])
         }
-
-        const newPeople = Math.floor(people/(countries.length))
-        countries.forEach(([nx,ny])=>{
-          graph[nx][ny] = newPeople
-        })
       }
     }
   }
-  if (flag === false) {
+  targets.forEach((queue) => {
+    const newHumanCount = Math.floor(
+      queue.reduce((acc, cur) => acc + countries[cur[0]][cur[1]], 0) /
+        queue.length,
+    )
+    for (const [x, y] of queue) {
+      countries[x][y] = newHumanCount
+    }
+  })
+
+  if (targets.length === 0) {
     break
   }
+
   day += 1
 }
 console.log(day)
