@@ -33,7 +33,7 @@ while True:
         visited[i][j] = True
         needVisit = bfs(i,j,graph,visited)
         if(len(needVisit) != 1):
-          target.append([*needVisit])
+          target.append(needVisit)
   
   for queue in target:
     total =0
