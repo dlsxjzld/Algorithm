@@ -4,14 +4,23 @@ const input = require("fs")
   .trim()
   .split("\n")
 
-const [n, k] = input[0].split(" ").map(Number)
-const numbers = input[1].split(" ").map(Number)
-let current = numbers.slice(0, k).reduce((a, b) => a + b)
-let answer = current
+const [N,K] = input[0].split(' ').map(Number)
+const temperature = input[1].split(' ').map(Number)
 
-for (let i = 1; i < n - k + 1; i++) {
-  current -= numbers[i - 1]
-  current += numbers[i + k - 1]
-  answer = Math.max(answer, current)
+let answer = temperature.slice(0,K).reduce((a,b)=>a+b,0)
+let test = answer
+for(let i=K;i<N;i++){
+  test = test - temperature[i-K] + temperature[i]
+  answer = Math.max(answer,test)
 }
+
 console.log(answer)
+
+
+
+
+
+
+
+
+
