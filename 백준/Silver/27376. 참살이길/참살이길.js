@@ -15,9 +15,16 @@ const cal = (time, period, start) => {
   if (time < start) {
     return start - time
   }
-  const now = time - start
-  const sw = Math.floor(now / period) % 2
-  return sw * (period - (now % period))
+  const rest = time - start
+
+  const flag = Math.floor(rest / period) % 2 // 홀수면 빨 // 짝수면 초
+
+  if (flag === 1) {
+    // 다음 초록으로 변할때까지의 시간을 return
+    return period - (rest % period)
+  } else {
+    return 0
+  }
 }
 
 for (let [pos, period, start] of lights) {
