@@ -7,34 +7,23 @@ const n = Number(input[0])
 const arr = input[1].split(" ").map(Number)
 
 const visited = Array.from({ length: n }, () => false)
-let MAX = Number.MIN_SAFE_INTEGER
+let result = [];
+let maxValue = 0;
+dfs(0);
 
-const dfs = (array, visited, targetLength) => {
-  if (array.length === targetLength) {
-
-    let sum = 0
-    for(let i =0;i<array.length-1;i++){
-      sum += Math.abs(array[i] - array[i+1])
-    }
-    MAX = Math.max(MAX,sum)
-    return
+function dfs(depth){
+  if(depth === n){
+    let current = 0;
+    for(let i = 0; i < n - 1; i++) current += Math.abs(result[i] - result[i + 1]);
+    maxValue = Math.max(maxValue, current);
   }
-
-  for (let i = 0; i < n; i++) {
-    if (!visited[i]) {
-      visited[i] = true
-      dfs([...array, arr[i]], visited, targetLength)
-      visited[i] = false
-    }
+  for(let i = 0; i < n; i++){
+    if(visited[i]) continue;
+    visited[i] = true;
+    result.push(arr[i]);
+    dfs(depth + 1);
+    visited[i] = false;
+    result.pop();
   }
 }
-
-
-for (let i = 0; i < n; i++) {
-  if (!visited[i]) {
-    visited[i] = true
-    dfs([arr[i]], visited, n)
-    visited[i] = false
-  }
-}
-console.log(MAX)
+console.log(maxValue);
