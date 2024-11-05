@@ -11,9 +11,7 @@ const B = new Set(input[2].split(' ').map(Number))
 for(let i of B){
     A.delete(i)
 }
-if(A.size === 0){
-    console.log(0)
-}else{
-    console.log(A.size)
-    console.log( ...[...A].sort((a,b)=>a-b))
+console.log(A.size)
+if(A.size != 0){
+    console.log([...A].sort((a,b)=>a-b).join(' '))
 }
