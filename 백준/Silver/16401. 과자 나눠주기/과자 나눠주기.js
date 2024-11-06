@@ -11,22 +11,22 @@ const input = require("fs")
 
 const [M, N] = input[0].split(" ").map(Number)
 const cookies = input[1].split(" ").map(Number)
-cookies.sort((a,b)=>a-b)
-const canGive = (cookieSize, M, cookies) => {
+cookies.sort((a, b) => a - b)
+const canGive = (cookieSize, N,M, cookies) => {
   // M명의 조카한테 모두 같은 길이의 cookieSize를 줘야함
   // cookies에서 cookieSize가 M개 나올 수 있어야함
   let cnt = 0
-  for (let cookie of cookies) {
-    cnt += Math.floor(cookie / cookieSize)
+  for (let i=0;i<N;i++) {
+    cnt += Math.floor(cookies[i] / cookieSize)
   }
-  return cnt>=M
+  return cnt >= M
 }
 
-const bs = (start, end, M, cookies) => {
+const bs = (start, end, N,M, cookies) => {
   let answer = 0
   while (start <= end) {
     let mid = Math.floor((start + end) / 2)
-    if (canGive(mid, M, cookies)) {
+    if (canGive(mid, N,M, cookies)) {
       answer = mid
       start = mid + 1
     } else {
@@ -35,4 +35,4 @@ const bs = (start, end, M, cookies) => {
   }
   return answer
 }
-console.log(bs(0, cookies[N - 1], M, cookies))
+console.log(bs(0, cookies[N - 1],N, M, cookies))
