@@ -11,7 +11,7 @@ const input = require("fs")
 
 const [M, N] = input[0].split(" ").map(Number)
 const cookies = input[1].split(" ").map(Number)
-cookies.sort((a, b) => a - b)
+
 const canGive = (cookieSize, N,M, cookies) => {
   // M명의 조카한테 모두 같은 길이의 cookieSize를 줘야함
   // cookies에서 cookieSize가 M개 나올 수 있어야함
@@ -35,4 +35,4 @@ const bs = (start, end, N,M, cookies) => {
   }
   return answer
 }
-console.log(bs(0, cookies[N - 1],N, M, cookies))
+console.log(bs(0, 1e9,N, M, cookies))
