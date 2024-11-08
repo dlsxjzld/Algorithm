@@ -4,43 +4,37 @@ const input = require("fs")
   .trim()
   .split("\n")
 
-const [r, c] = input[0].split(" ").map(Number)
+const [R, C] = input[0].split(" ").map(Number)
+const graph = input.slice(1).map((row) => row.split(""))
 
-const graph = input.slice(1, 1 + r).map((row) => row.split(""))
-const visited = Array.from({ length: r }, () =>
-  Array.from({ length: c }, () => false),
-)
+const visited = Array.from({ length: 26 }, () => false)
+let answer = 1
+visited[graph[0][0].charCodeAt() - 65] = true
 
-const dx = [0, 0, 1, -1]
-const dy = [1, -1, 0, 0]
-const checkAlphabet = new Set()
-
-let cnt = 1
-visited[0][0] = true
-checkAlphabet.add(graph[0][0])
-
-const moveGraph = (sx, sy, newCnt) => {
+const move = [
+  [0, 1],
+  [0, -1],
+  [1, 0],
+  [-1, 0],
+]
+const dfs = (x, y, visited, cnt) => {
+  answer = Math.max(answer, cnt)
   for (let i = 0; i < 4; i++) {
-    const nx = sx + dx[i]
-    const ny = sy + dy[i]
-
+    const [nx, ny] = [x + move[i][0], y + move[i][1]]
     if (
-      nx >= 0 &&
-      ny >= 0 &&
-      nx < r &&
-      ny < c &&
-      !visited[nx][ny] &&
-      !checkAlphabet.has(graph[nx][ny])
+      nx < 0 ||
+      ny < 0 ||
+      nx >= R ||
+      ny >= C ||
+      visited[graph[nx][ny].charCodeAt() - 65]
     ) {
-      visited[nx][ny] = true
-      checkAlphabet.add(graph[nx][ny])
-      moveGraph(nx, ny, newCnt + 1)
-      cnt = Math.max(cnt, newCnt + 1)
-      checkAlphabet.delete(graph[nx][ny])
-      visited[nx][ny] = false
+      continue
     }
+    visited[graph[nx][ny].charCodeAt() - 65] = true
+    dfs(nx, ny, visited, cnt + 1)
+    visited[graph[nx][ny].charCodeAt() - 65] = false
   }
 }
 
-moveGraph(0, 0, 1)
-console.log(cnt)
+dfs(0, 0, visited, 1)
+console.log(answer)
