@@ -11,5 +11,7 @@ for (let member of participant) {
 for (let member of didRace) {
   check.set(member, check.get(member) - 1)
 }
-const answer = Array.from(check.entries()).find(([key, value]) => value === 1)
-console.log(answer[0])
+
+for(let [key,value] of check){
+    value && console.log(key)
+}
