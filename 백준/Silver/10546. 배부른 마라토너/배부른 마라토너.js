@@ -13,5 +13,8 @@ for (let member of didRace) {
 }
 
 for(let [key,value] of check){
-    value && console.log(key)
+    if(value){
+     console.log(key)
+     break
+    }
 }
