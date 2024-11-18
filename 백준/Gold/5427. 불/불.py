@@ -69,6 +69,7 @@ for t in range(tc):
   fireDist = bfs(firePositions,graph,h,w,True)
   startDist = bfs(startPosition,graph,h,w)
   result = findAnswer(fireDist,startDist,h,w)
-  print(result)
+  answer.append(str(result))
+print('\n'.join(answer))
 
 
