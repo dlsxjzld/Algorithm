@@ -2,20 +2,19 @@ const input = require("fs").readFileSync("/dev/stdin").toString().trim().split("
 
 
 const numbers = input.slice(0).map((row) => row.split(" ").map(Number))
+const MAX_LEN = 101;
 
-const answer = new Set()
+const arr = Array.from({length : MAX_LEN}, ()=>Array.from({length : MAX_LEN}, ()=>false))
+let cnt = 0;
 
-for (let [x1, y1, x2, y2] of numbers) {
-  const graph = Array.from({ length: 101 }, () => Array.from({ length: 101 }, () => false))
-  for (let sx = y1; sx <= y2; sx += 1) {
-    for (let sy = x1; sy <= x2; sy += 1) {
-      graph[sx][sy] = true
-      if(graph[sx][sy] && graph[sx][sy-1] && graph[sx-1][sy-1] && graph[sx-1][sy]){
-        answer.add(`${sx}${sy}${sx-1}${sy-1}`)
-      }
-
-    }
+for(let [x1, y1, x2, y2] of numbers){
+  for(let x = x1; x < x2; x++){
+  for(let y = y1; y < y2; y++){
+    if(arr[x][y]) continue;
+    arr[x][y] = true;
+    cnt++;
+  }
   }
 }
 
-console.log(answer.size)
+console.log(cnt);
