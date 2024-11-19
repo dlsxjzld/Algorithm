@@ -1,16 +1,18 @@
 import sys
 input = sys.stdin.readline
 
+MAX_LEN = 101
 numbers = [list(map(int, line.split())) for line in sys.stdin.read().strip().split("\n")]
 
-answer = set()
+arr = [[False] * MAX_LEN for _ in range(MAX_LEN)]
+cnt = 0
 
 for x1, y1, x2, y2 in numbers:
-    graph = [[False] * 101 for _ in range(101)]
-    for sx in range(y1, y2 + 1):
-        for sy in range(x1, x2 + 1):
-            graph[sx][sy] = True
-            if graph[sx][sy] and graph[sx][sy - 1] and graph[sx - 1][sy - 1] and graph[sx - 1][sy]:
-                answer.add(f"{sx}{sy}{sx - 1}{sy - 1}")
+    for x in range(x1, x2):
+        for y in range(y1, y2):
+            if arr[x][y]:
+                continue
+            arr[x][y] = True
+            cnt += 1
 
-print(len(answer))
+print(cnt)
