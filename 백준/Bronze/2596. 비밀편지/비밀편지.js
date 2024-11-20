@@ -1,21 +1,3 @@
-// const input = require("fs").readFileSync("/dev/stdin").toString().trim().split("\n")
-
-// const numbers = input.slice(0).map((row) => row.split(" ").map(Number))
-
-// const graph = Array.from({ length: 101 }, () => Array.from({ length: 101 }, () => false))
-// let cnt = 0
-// for (let [x1, y1, x2, y2] of numbers) {
-//   for (let sx = y1; sx < y2; sx += 1) {
-//     for (let sy = x1; sy < x2; sy += 1) {
-//       if (graph[sx][sy]) continue
-//       graph[sx][sy] = true
-//       cnt += 1
-//     }
-//   }
-// }
-
-// console.log(cnt)
-
 const input = require("fs").readFileSync("/dev/stdin").toString().trim().split("\n")
 
 
