@@ -32,9 +32,10 @@ const visited = Array.from({ length: 6 }, () =>
   Array.from({ length: 6 }, () => false),
 )
 visited[row[x]][row[y]] = true
+let answer = "Invalid"
 
 if (target.size != 36) {
-  console.log("Invalid")
+  console.log(answer)
   return
 }
 
@@ -46,15 +47,15 @@ for (let i = 1; i < 36; i += 1) {
     (Math.abs(curX - prevRow) === 2 && Math.abs(curY - prevCol) === 1)
   ) {
     if (visited[curX][curY]) {
-      console.log("Invalid")
-      return
+      answer = "Invalid"
+      break
     }
     visited[curX][curY] = true
     prevRow = curX
     prevCol = curY
   } else {
-    console.log("Invalid")
-    return
+    answer = "Invalid"
+    break
   }
 }
 const [lastY, lastX] = input[35].split("")
@@ -65,7 +66,10 @@ if (
     (Math.abs(row[lastX] - startRow) === 2 &&
       Math.abs(col[lastY] - startCol) === 1))
 ) {
-  console.log("Valid")
-  return
+  answer = "Valid"
+  
+} else {
+
+  answer = "Invalid"
 }
-console.log('Invalid')
+console.log(answer)
