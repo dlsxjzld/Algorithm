@@ -118,7 +118,9 @@ const dijkstra = (start) => {
 }
 
 dijkstra(k)
+const answer = []
 for (let i = 1; i <= v; i += 1) {
   const dist = distance[i]
-  console.log(dist === Infinity ? "INF" : dist)
+  answer.push(dist === Infinity ? "INF" : dist)
 }
+console.log(answer.join('\n'))
