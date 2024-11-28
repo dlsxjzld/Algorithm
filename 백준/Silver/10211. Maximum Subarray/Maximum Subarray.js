@@ -5,6 +5,7 @@ const input = require("fs")
   .split("\n")
 
 const t = Number(input[0])
+const answer = []
 for (let tc = 0; tc < t; tc += 1) {
   const n = Number(input[tc * 2 + 1])
   const numbers = input[tc * 2 + 2].split(" ").map(Number)
@@ -15,5 +16,6 @@ for (let tc = 0; tc < t; tc += 1) {
       dp[i] += dp[i - 1]
     }
   }
-  console.log(Math.max(...dp))
+  answer.push(Math.max(...dp))
 }
+console.log(answer.join('\n'))
