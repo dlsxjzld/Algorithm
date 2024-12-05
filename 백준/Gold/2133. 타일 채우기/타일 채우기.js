@@ -1,21 +1,21 @@
 const input = require("fs")
-  .readFileSync("/dev/stdin")
-  .toString()
+  .readFileSync("/dev/stdin", "utf-8")
   .trim()
-  .split("\n")
+  .split("\n");
+let N = Number(input[0]);
 
-const n = Number(input[0])
-const dp = Array.from({ length: n + 1 }, () => 0)
-dp[2] = 3
-
-if (n % 2) {
-  console.log(0)
-} else {
-  for (let i = 4; i <= n; i++) {
-    dp[i] = dp[i - 2] * 3+2
-    for (let j = i - 4; j > 0; j -= 2) {
-      dp[i] += dp[j] * 2
-    }
-  }
-  console.log(dp[n])
+let dp = [];
+for (let i = 0; i <= 30; i++) {
+  dp[i] = 0;
 }
+dp[0] = 1;
+dp[2] = 3;
+
+
+for (let i = 4; i <= N; i += 2) {
+    dp[i] = dp[i-2] * dp[2];
+  for (let j = i-4; j >=0; j -= 2) {
+    dp[i] += dp[j]*2;
+  }
+}
+console.log(dp[N]);
