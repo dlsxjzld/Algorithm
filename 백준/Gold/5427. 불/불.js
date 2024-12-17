@@ -11,91 +11,97 @@ const move = [
   [-1, 0],
 ]
 
-const bfs = (start, graph, h, w, isFire = false) => {
-  const visited = Array.from({ length: h }, () =>
-    Array.from({ length: w }, () => Number.MAX_SAFE_INTEGER),
-  )
-  const queue = [...start]
+const findAnswer = (fires, start, graph) => {
+  let answer = Number.MAX_SAFE_INTEGER
+  const w = graph.length
+  const h = graph[0].length
+
+  // 1행
+  // 마지막 행
+  for (let i = 0; i < h; i += 1) {
+    if (fires[0][i] > start[0][i]) {
+      answer = Math.min(answer, start[0][i])
+    }
+    if (fires[w - 1][i] > start[w - 1][i]) {
+      answer = Math.min(answer, start[w - 1][i])
+    }
+  }
+  // 1열
+  // 마지막 열
+  for (let i = 0; i < w; i += 1) {
+    if (fires[i][0] > start[i][0]) {
+      answer = Math.min(answer, start[i][0])
+    }
+    if (fires[i][h - 1] > start[i][h - 1]) {
+      answer = Math.min(answer, start[i][h - 1])
+    }
+  }
+  return answer === Number.MAX_SAFE_INTEGER ? "IMPOSSIBLE" : answer
+}
+
+const bfs = (pos, graph, isFire = false) => {
+  const queue = [...pos]
+  const w = graph.length
+  const h = graph[0].length
+
   let index = 0
-  for (let [x, y] of queue) {
+  const visited = Array.from({ length: w }, () =>
+    Array.from({ length: h }, () => Number.MAX_SAFE_INTEGER),
+  )
+
+  for (let [x, y] of pos) {
     visited[x][y] = 1
   }
 
   while (queue.length > index) {
     const [x, y] = queue[index++]
-
-    for (let i = 0; i < 4; i++) {
-      const [nx, ny] = [x + move[i][0], y + move[i][1]]
-
+    for (let i = 0; i < 4; i += 1) {
+      const nx = x + move[i][0]
+      const ny = y + move[i][1]
       if (
         nx < 0 ||
         ny < 0 ||
-        nx >= h ||
-        ny >= w ||
-        graph[nx][ny] == "#" ||
-        visited[nx][ny] != Number.MAX_SAFE_INTEGER
+        nx >= w ||
+        ny >= h ||
+        graph[nx][ny] === "#" ||
+        visited[nx][ny] <= visited[x][y] + 1
       ) {
         continue
       }
-      if (!isFire) {
-        if (graph[nx][ny] == "*") {
-          continue
-        }
+
+      if (!isFire && graph[nx][ny] === "*") {
+        continue
       }
       visited[nx][ny] = visited[x][y] + 1
       queue.push([nx, ny])
     }
   }
+
   return visited
 }
 
-const getAnswer = (target, fires, h, w) => {
-  const answer = []
-  for (let i = 0; i < w; i++) {
-    if (target[0][i] < fires[0][i]) {
-      answer.push(target[0][i])
-    } else if (target[h - 1][i] < fires[h - 1][i]) {
-      answer.push(target[h - 1][i])
-    }
-  }
-  for (let i = 0; i < h; i++) {
-    if (target[i][0] < fires[i][0]) {
-      answer.push(target[i][0])
-    } else if (target[i][w - 1] < fires[i][w - 1]) {
-      answer.push(target[i][w - 1])
-    }
-  }
-  if (answer.length > 0) {
-    return Math.min(...answer)
-  } else {
-    return "IMPOSSIBLE"
-  }
-}
-
 const T = Number(input[0])
-
 let index = 1
-for (let tc = 0; tc < T; tc += 1) {
+for (let tc = 1; tc <= T; tc += 1) {
   const [w, h] = input[index++].split(" ").map(Number)
   const graph = input.slice(index, index + h).map((row) => row.split(""))
   index += h
 
-  const fires = []
-  const target = []
-
-  for (let i = 0; i < h; i++) {
-    for (let j = 0; j < w; j++) {
-      if (graph[i][j] == "*") {
-        fires.push([i, j])
-      } else if (graph[i][j] == "@") {
-        target.push([i, j])
+  const firesPositions = []
+  const startPositions = []
+  for (let i = 0; i < h; i += 1) {
+    for (let j = 0; j < w; j += 1) {
+      if (graph[i][j] === "*") {
+        firesPositions.push([i, j])
+      } else if (graph[i][j] === "@") {
+        startPositions.push([i, j])
       }
     }
   }
-  const targetVisited = bfs(target, graph, h, w)
-  const firesVisited = bfs(fires, graph, h, w, true)
 
-  const targetDist = getAnswer(targetVisited, firesVisited, h, w)
+  const firesVisited = bfs(firesPositions, graph, true)
+  const startVisited = bfs(startPositions, graph)
 
-  console.log(targetDist)
+  // 상근이는 무조건 불이 붙는데 걸린 시간보다 적게 걸려야함. 같거나 크면 탈출 불가
+  console.log(findAnswer(firesVisited, startVisited, graph))
 }
