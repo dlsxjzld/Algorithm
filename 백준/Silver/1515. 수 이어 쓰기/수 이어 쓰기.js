@@ -4,20 +4,24 @@ const input = require("fs")
   .trim()
   .split("\n")
 
-let n = input[0].split("")
-let num = 0
-let index = 0
-while (true) {
-  num += 1
-  let strNum = num.toString()
+const N = input[0]
 
-  for (let char of strNum) {
-    if (n[index] === char) {
-      index++
+let start = 1
+let index = 0
+
+while (index < N.length) {
+  const str = start.toString()
+
+  for (let i = 0; i < str.length; i += 1) {
+    if (str[i].includes(N[index])) {
+      index += 1
     }
   }
-  if (index === n.length) {
-    console.log(num)
+
+  if (index >= N.length) {
     break
   }
+  start += 1
 }
+console.log(start)
+
