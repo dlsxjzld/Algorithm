@@ -1,25 +1,40 @@
+function bfs(node,graph,visited){
+    const queue = [node]
+    let index = 0
+    while(queue.length>index){
+        const cur = queue[index++]
+        
+        for(let next of graph[cur]){
+            if(!visited[next]){
+                visited[next] = true
+                queue.push(next)
+            }
+        }
+    }
+    return 1
+}
+
 function solution(n, computers) {
     var answer = 0;
     const visited = Array.from({length:n},()=>false)
-
-    const dfs = function(start){
-        const stack = []
-        stack.push(start)
-        while(stack.length>0){
-            const computer = stack.pop()
-            
-            computers[computer].forEach((v,i)=> {if (i!==computer && v==1 && visited[i] === false){
-                visited[i] = true
-                stack.push(i)
-            }})
+    const graph = Array.from({length:n},()=>[])
+    for(let i=0;i<n;i+=1){
+        for(let j=0;j<n;j+=1){
+            if(i === j) {
+                continue
+            }
+            if(computers[i][j] === 1){
+                graph[i].push(j)
+            }
         }
-        return 1
     }
     
-    for(let idx=0;idx<n;idx++){
-        if(!visited[idx]){
-            answer += dfs(idx)
+    for(let i=0;i<n;i+=1){
+        if(!visited[i]){
+            visited[i] = true
+            answer += bfs(i,graph,visited)
         }
     }
+
     return answer;
 }
