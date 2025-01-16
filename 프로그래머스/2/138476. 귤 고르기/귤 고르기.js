@@ -3,14 +3,12 @@ function solution(k, tangerine) {
 
     const counts = {}
     tangerine.forEach((val)=>{
-        if(!counts[val]){
-            counts[val] = 0
-        }
-        counts[val] +=1
+        counts[val] = (counts[val] || 0) + 1
     })
-    const sortedCounts = Object.entries(counts).sort((a,b)=>b[1]-a[1])
+    
+    const sortedCounts = Object.values(counts).sort((a,b)=>b-a)
 
-    for(let [key,value] of sortedCounts){
+    for(let value of sortedCounts){
         if(k <= 0){
             break
         }
