@@ -2,31 +2,27 @@ const input = require("fs")
   .readFileSync("/dev/stdin")
   .toString()
   .trim()
-  .split("\n")
+  .split("\n");
 
-const N = +input[0]
-const numbers = input.slice(1).map((row) => row.split(" ").map(Number))
+const T = input.shift();
 
-let MAX = Number.MIN_SAFE_INTEGER
-
-const scores = numbers.map((number) => {
-  let myScores = []
-  for (let i = 0; i < 5; i += 1) {
-    let score = number[i]
-    for (let j = i + 1; j < 5; j += 1) {
-      score += number[j]
-      for (let k = j + 1; k < 5; k += 1) {
-        score += number[k]
-        const splits = score.toString().split("")
-        const myRealScore = +splits[splits.length - 1]
-        myScores.push(myRealScore)
-        MAX = Math.max(MAX, myRealScore)
-        score -= number[k]
+let m = 1;
+let MAX = 0;
+let answer = 0;
+const cntNums = input.map((v) => {
+  let nums = v.split(" ");
+  for (let i = 0; i < 5; i++) {
+    for (let j = i + 1; j < 5; j++) {
+      for (let k = j + 1; k < 5; k++) {
+        tmp = String(nums[i] * 1 + nums[j] * 1 + nums[k] * 1);
+        if (MAX <= Number(tmp.slice(-1))) {
+          answer = m;
+          MAX = Number(tmp.slice(-1));
+        }
       }
-      score -= number[j]
     }
   }
-  return Math.max(...myScores)
-})
+  m += 1;
+});
 
-console.log(scores.lastIndexOf(MAX) + 1)
+console.log(answer);
