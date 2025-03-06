@@ -17,12 +17,12 @@ if (m === 0) {
 while (start <= n - 1) {
   const diff = Math.abs(numbers[end] - numbers[start])
   if (diff >= m) {
-    if (answer > diff) {
-      answer = diff
-    }
-    start += 1
+      if(answer > diff){
+        answer = diff
+      }
+          start += 1
   } else {
-    if (n - 1 > end) {
+    if (end <= n - 1) {
       end += 1
     } else {
       start += 1
