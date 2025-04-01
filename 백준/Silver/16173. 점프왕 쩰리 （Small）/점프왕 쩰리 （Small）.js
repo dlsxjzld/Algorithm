@@ -4,36 +4,37 @@ const input = require("fs")
   .trim()
   .split("\n")
 
-const n = Number(input[0])
-const graph = input.slice(1).map(row=>row.split(' ').map(Number))
+const [n] = input[0].split(" ").map(Number)
+const graph = input.slice(1).map((row) => row.split(" ").map(Number))
+const board = Array.from({ length: n }, () =>
+  Array.from({ length: n }, () => false),
+)
 
-const bfs = ()=>{
-  const queue = [[0,0,graph[0][0]]]
-  const visited = Array.from({length:n},()=>Array.from({length:n},()=>false))
-  visited[0][0] = true
+const move = [
+  [0, 1],
+  [1, 0],
+]
 
-  const move=[[0,1],[1,0]]
-  
-  let flag = false
-  
-  while(queue.length>0){
-    const [x,y,availableMove] = queue.shift()
-    if(x === n-1 && y === n-1){
-      flag = true
-      break
-    }
-    for(let i=0;i<2;i+=1){
+const bfs = () => {
+  const queue = [[0, 0]]
+  board[0][0] = true
 
-      const [nx,ny] = [x+move[i][0]*availableMove,y+move[i][1]*availableMove]
-      if(nx<0 || ny<0 || nx>=n || ny>=n || visited[nx][ny]){
-        continue
+  let index = 0
+  while (queue.length > index) {
+    const [x, y] = queue[index++]
+    const cur = graph[x][y]
+    for (const [dx, dy] of move) {
+      const nx = x + dx * cur
+      const ny = y + dy * cur
+      if (nx >= 0 && nx < n && ny >= 0 && ny < n) {
+        if (board[nx][ny] === false) {
+          board[nx][ny] = true
+          queue.push([nx, ny])
+        }
       }
-      queue.push([nx,ny,graph[nx][ny]])
-      visited[nx][ny] = true
     }
   }
-  return flag
 }
 
-const answer = bfs()
-console.log(answer ? 'HaruHaru' : 'Hing')
+bfs()
+console.log(board[n - 1][n - 1] === true ? "HaruHaru" : "Hing")
