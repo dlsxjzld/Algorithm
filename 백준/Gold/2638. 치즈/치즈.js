@@ -59,13 +59,9 @@ while (true) {
           const newX = i + dx
           const newY = j + dy
 
-          if (
-            newX >= 0 &&
-            newY >= 0 &&
-            newX < N &&
-            newY < M &&
-            graph[newX][newY] === "2"
-          ) {
+          if (newX < 0 || newY < 0 || newX >= N || newY >= M) continue
+
+          if (graph[newX][newY] === "2") {
             outAir += 1
           }
         }
