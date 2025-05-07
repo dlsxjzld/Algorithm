@@ -4,20 +4,61 @@ const input = require("fs")
   .trim()
   .split("\n")
 
-// 1번부터 n번
-// 홀수명이면 마지막 번호는 다음 라운드로 자동 진출
+const [n, a, b] = input[0].split(" ").map(Number)
 
-let [n, kim, im] = input[0].split(" ").map(Number)
-let cnt = 0 // 경기 횟수
+// 1 2 3
+// 1 2
+// 1
+// 3명이면 2번
 
-while (n > 0) {
-  n = Math.floor(n / 2)
-  cnt += 1
-  // 올림 해줘야 맞붙는 것 확인 가능
-  kim = Math.ceil(kim / 2)
-  im = Math.ceil(im / 2)
-  if (kim === im) {
-    console.log(cnt)
+// 1 2 3 4 5
+// 1 2 3
+// 1 2
+// 1
+// 5명이면 3번
+//n이 홀수 -> 2로 나누고 올림
+// n이 짝수 -> 2^x x번 경기함
+
+// 1 2 3 4 5 6
+// 1 2 3
+// 1 2
+// 1
+
+// 6명이면 3번
+const isEven = n % 2 === 0
+
+let gameRound = Math.ceil(n / 2)
+
+// 1 2 -> 0.5 1
+
+// 3 4 -> 1.5 2
+
+// 7 8 -> 3.5 4
+
+// 8 9 -> 4 4.5
+
+// 홀수면 2로 나눠서 올림
+// 짝수면 2로 나눔
+let nextA = a
+let nextB = b
+let answer = -1
+for (let i = 1; i <= gameRound; i += 1) {
+  if (nextA % 2 === 0) {
+    nextA = nextA / 2
+  } else {
+    nextA = Math.ceil(nextA / 2)
+  }
+  if (nextB % 2 === 0) {
+    nextB = nextB / 2
+  } else {
+    nextB = Math.ceil(nextB / 2)
+  }
+
+  if (nextA === nextB) {
+    answer = i
     break
   }
+    
 }
+
+console.log(answer)
