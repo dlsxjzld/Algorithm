@@ -1,31 +1,26 @@
-
-
 function solution(cacheSize, cities) {
     var answer = 0;
-    let cache = []
-    const convertedCities = cities.map((city)=>city.toLowerCase())
+    const cache = []; 
+    const convertedCities = cities.map((city) => city.toLowerCase());
 
-    for(let city of convertedCities){
-        if(!cache.includes(city)){
-            const currentSize = cache.length
-            if(currentSize < cacheSize){
-                cache.push(city)
-            }else{
-                if(cacheSize !==0){
-                    cache.shift()
-                    cache.push(city)   
-                }
+    for (const city of convertedCities) {
+        const indexInCache = cache.indexOf(city);
+
+        if (indexInCache === -1) { 
+            answer += 5;
+            if (cache.length < cacheSize) {
+                cache.push(city);
+            } else if (cacheSize > 0) {
+                cache.shift();
+                cache.push(city);
             }
-            answer += 5
-        }else{
-            let targetIdx = cache.indexOf(city)
-            const targetCity = cache[targetIdx]
-            const newCache = [...cache.slice(0,targetIdx), ...cache.slice(targetIdx+1)]
-            newCache.push(targetCity)
-            cache = newCache
-            answer +=1
+        } else { 
+            answer += 1;
+            
+            const cachedCity = cache.splice(indexInCache, 1)[0];
+            cache.push(cachedCity);
         }
     }
-    
+
     return answer;
 }
