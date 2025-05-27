@@ -1,52 +1,66 @@
-function solution(str1, str2) {
-    var answer = 0;
-    // 대소문자 구분 안함 -> 소문자로 통일
-    str1 = str1.toLowerCase()
-    str2 = str2.toLowerCase()
-    const arr1 = []
-    const arr2 = []
-    // str1 과 str2 영문자만 있는지 확인 후 새 배열 만들기
-    for (let i = 0; i < str1.length - 1; i++) {
-        // 두 글자씩 끊어서 확인
-        const str = str1.slice(i, i+2);
-        if (str[0] >= "a" && str[0] <= "z" && str[1] >= "a" && str[1] <= "z") {
-          arr1.push(str);
+const alphabet = 'abcdefghijklmnopqrstuvwxyz'
+
+function sliceStr (str){
+    const strArr = []
+    // 두 글자씩 끊기
+
+    for(let i=0;i<str.length-1;i+=1){
+        const cur = str.slice(i,i+2)
+        if(alphabet.includes(cur[0]) && alphabet.includes(cur[1])){
+            strArr.push(cur)   
         }
-      }
-    // str1 과 str2 영문자만 있는지 확인 후 새 배열 만들기
-    for (let i = 0; i < str2.length - 1; i++) {
-        // 두 글자씩 끊어서 확인
-        const str = str2.slice(i, i+2);
-        if (str[0] >= "a" && str[0] <= "z" && str[1] >= "a" && str[1] <= "z") {
-          arr2.push(str);
-        }
-      }
+        
+    }
     
+    
+    return [...strArr]
+}
+
+function intersection (str1,str2){
+    const str1Len = str1.length
+    const str2Len = str2.length
     const inter = []
-    const union = []
-    // 교집합
-    for(let i =0;i<arr1.length;i++){
-        if(arr2.indexOf(arr1[i]) >=0){
-            inter.push(arr1[i])
-            // arr2 에서 교집합 빼기 
-            arr2.splice(arr2.indexOf(arr1[i]),1)
+    const newStr1 = [...str1]
+    const newStr2 = [...str2]
+    
+    for(let i=0;i<str1Len; i+=1){
+        const cur = newStr1[i]
+        const str2HasStr1 = newStr2.indexOf(cur)
+
+        if(str2HasStr1 !== -1){
+            inter.push(cur)
+            newStr2.splice(str2HasStr1,1)
         }
-        // 합집합에 arr1 넣기
-        union.push(arr1[i])
     }
-    // arr2 는 arr2에서 교집합이 빠진 상태
-    // 합집합 = arr1 + arr2 - 교집합
-    for(let i=0;i<arr2.length;i++){
-        // 합집합에 바뀐 arr2 넣기
-        union.push(arr2[i])
+    
+    for(let i=0;i<inter.length;i+=1){
+        const cur = inter[i]
+        const idx = newStr1.indexOf(cur)
+        newStr1.splice(idx,1)
     }
+    // 교집합
+    // A - 교집합
+    // B - 교집합
+    return {newStr1,newStr2,inter}
+}
+
+function solution(str1, str2) {
+    
+    const str1Arr = sliceStr(str1.toLowerCase())
+    const str2Arr = sliceStr(str2.toLowerCase())
+    
+    const {newStr1,newStr2,inter} = intersection(str1Arr,str2Arr)
+
+    const unionSize = newStr1.length + newStr2.length + inter.length
+    
+    if(unionSize === 0 ){
+        return 65536
+    }else{
+        return Math.floor((inter.length / unionSize)*65536)
+    }
+    
 
     
-    
-    if (inter.length ===0 && union.length === 0){
-        answer = 65536
-    }else{
-        answer = parseInt(Math.floor((inter.length / union.length)*65536))
-    }
-    return answer;
+    // 두 집합의 교집합 크기를 두 집합의 합집합 크기로 나눈 값
+
 }
