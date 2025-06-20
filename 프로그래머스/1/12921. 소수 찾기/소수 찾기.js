@@ -1,19 +1,21 @@
 
 function solution(n) {
     var answer = 0;
+    const arr = Array.from({length:n+1},()=>true)
+    arr[0] = false
+    arr[1] = false
     
     for(let i=2;i<=n;i+=1){
-        const center = Math.floor(Math.sqrt(i))
-        let flag = true
-        for(let j=2;j<=center;j+=1){
-            if(i%j === 0){
-                flag = false
-                break
+        for(let j=i;j<=n;j+=i){
+            if(i === j){
+                continue
+            }else{
+                arr[j] = false
             }
         }
-        if(flag){
-            answer +=1
-        }
     }
+    
+    answer = arr.filter((val)=>val).length
+    
     return answer;
 }
