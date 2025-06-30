@@ -1,7 +1,8 @@
 function solution(nums) {
     var answer = 0;
-    const can = nums.length/2
-    const kind = new Set(nums)
-    answer = kind.size > can ? can : kind.size
+    const max = nums.length/2
+    const uniqueNums = new Set(nums)
+    answer = max > uniqueNums.size ? uniqueNums.size : max
+    
     return answer;
 }
