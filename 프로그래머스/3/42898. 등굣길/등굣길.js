@@ -1,28 +1,21 @@
 
-function solution(m, n, puddles) {
-    var answer = 0;
-    const dp = Array.from({length:m+1},()=>Array.from({length:n+1},()=>0))
-    puddles.forEach(([x,y])=>{
-        dp[x][y] = -1
-    })
-    
-    dp[1][1] = 1
-    
-    for(let i=1;i<=m;i+=1){
-        for(let j=1;j<=n;j+=1){
-            if((i === 1 && j === 1 ) || dp[i][j] === -1){
-                continue
-            }
-            if(dp[i-1][j] === -1){
-                dp[i][j] = dp[i][j-1] % 1_000_000_007
-            }else if(dp[i][j-1] === -1){
-                dp[i][j] = dp[i-1][j] % 1_000_000_007
-            }else{
-                dp[i][j] = (dp[i-1][j] + dp[i][j-1])% 1_000_000_007
+function solution(M, N, puddles) {
+    const T = Array(M).fill(null).map(() => [])
+    const chk = new Set(puddles.map(([x,y]) => `${x-1}:${y-1}`));
+    for (let i = 0; i < M ; i++) {
+        for (let j = 0 ; j < N ; j++) {
+            if (chk.has(`${i}:${j}`)) {
+                T[i][j] = 0;
+            } else if (i === 0 && j === 0) {
+                T[i][j] = 1;
+            } else if (i === 0) {
+                T[i][j] = T[i][j-1];
+            } else if (j === 0) {
+                T[i][j] = T[i-1][j];
+            } else {
+                T[i][j] = (T[i-1][j] + T[i][j-1]) % 1000000007;
             }
         }
     }
-    // console.log(dp)
-    answer = dp[m][n]
-    return answer;
+    return T[M-1][N-1];
 }
