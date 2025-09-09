@@ -1,27 +1,59 @@
 function solution(s) {
-    var answer = Number.MAX_SAFE_INTEGER;
+    let originS = s;
+    // 문자열을 자른다
+    // 자른 문자열로 압축을 시도한다
+    // 남은 문자열은 그냥 붙인다.
+    // 1을 제외한 압축된 횟수만큼 숫자를 앞에 붙인다.
+    // 길이를 비교한다.
+    // 문자열의 길이를 늘려서 처음부터 자른다.
+    // ..반복
+    let answer = s.length
     
-    for(let charLength = 1; charLength<=s.length;charLength++){
-        let tmpString = ''
-        let cnt = 1 // 압축되는 알파벳의 수
-        let start = 0 // 압축 시작하는 인덱스
-        let tmpChar = s.slice(start,start+charLength)
-        while(start<s.length){
-            start += charLength // 증감식
-            
-            if(tmpChar === s.slice(start,start+charLength)){
-                cnt += 1
-            }else{
-                tmpString += cnt === 1 ? tmpChar : cnt.toString()+tmpChar
-                tmpChar = s.slice(start,start+charLength)
-                cnt = 1
-            }
-        }
-        // 압축한 문자열의 길이가 짧다면 정답 갱신
-        answer = tmpString.length < answer ? tmpString.length : answer
+    // aabbacc
+    // 2a2ba2c
+    
+    for(let pressCnt=1; pressCnt<=s.length;pressCnt+=1){ 
+        // 1개부터 s개까지 압축 시도
+        let copiedS = s
+        let pressedS = ''
 
+
+        let char = copiedS.slice(0,pressCnt)
+        let cnt = 0
+
+        while(copiedS.length>0){
+            if(char === copiedS.slice(0,pressCnt)){
+                cnt +=1
+                copiedS = copiedS.slice(pressCnt,)
+            }else{
+                pressedS += (cnt>1 ? cnt.toString() : '') + char
+                char = copiedS.slice(0,pressCnt)
+                cnt = 0
+                
+                if(char < copiedS.length){
+                    pressedS += char
+                    break
+                }
+            }
+            
+            if(copiedS.length === 0){
+                pressedS += (cnt>1 ? cnt.toString() : '') + char
+            }
+            // console.log('cnt',cnt)
+            // console.log('char',char)
+            // console.log('copiedS.slice(0,pressCnt)',copiedS.slice(0,pressCnt))
+            // console.log('pressedS',pressedS)
+            // console.log()
+            
+        }
         
+        
+        if(pressedS.length < originS.length){
+            answer = pressedS.length
+            originS = pressedS
+        }
     }
+    
     
     return answer;
 }
