@@ -1,55 +1,36 @@
-function getCandidate(candidates,order,cour,visited,index,arr=[]){
-    if(arr.length === cour){
-        const tmp = [...arr]
-        tmp.sort()
-        if(!candidates.get(cour)[tmp.join('')] ){
-            candidates.get(cour)[tmp.join('')] = 0
-        }
-        candidates.get(cour)[tmp.join('')] += 1
+function makeCourse(ALL_COURSE,maxCourseLength,orders,start,currentCourse){
+    if(currentCourse.length === maxCourseLength){
+        ALL_COURSE.set(currentCourse.sort().join(''), (ALL_COURSE.get(currentCourse.sort().join('')) ?? 0) +1)
         return
     }
-    
-    for(let i=index;i<order.length;i+=1){
-        if(!visited[i]){
-            visited[i] = true
-            arr.push(order[i])
-            getCandidate(candidates,order,cour,visited,i+1,arr)
-            arr.pop()
-            visited[i] = false
-        }
+    for(let i=start;i<orders.length;i+=1){
+        makeCourse(ALL_COURSE,maxCourseLength,orders,i+1,[...currentCourse,orders[i]])   
     }
+    
 }
 
 function solution(orders, course) {
     var answer = [];
-    // course 수에 따라 조합을 다 구해야함?-> orders 순회하면서 course 수에 맞게 조합 만들기
-    // 각 course 의 원소에 맞는 조합들 다 구하고 그 중에서 orders 순회하면서 되는 값들 count +1
-    // count 높은 것들로 정답, 같은 count면 다 추가?
-    const candidates = new Map()
-    for(let cour of course){
-        candidates.set(cour,{})
-    }
-    for(let order of orders){
-        for(let cour of course){
-            const visited = Array.from({length:order.length},()=>false)
-            getCandidate(candidates,order,cour,visited,0)
+    const ALL_COURSE = new Map()
+    for(let c of course){
+        for(let ord of orders){
+            if(ord.length < c){
+                // 만들어야 할 코스에 필요한 메뉴 수 보다 주문한 단품메뉴 조합의 수가 작으면 못 만듬
+                continue
+            }
+            makeCourse(ALL_COURSE,c,ord,0,[])   
+            
         }
     }
-    
-    for(let cour of course){
-        const cand = candidates.get(cour) 
-        const real_cand = Object.entries(cand)
-        const MAX = Object.entries(cand).sort((a,b)=>b[1]-a[1])[0]
-
-        if(MAX){
-            const MAX_COUNT = MAX[1]
-            const ans = real_cand.filter((val)=>val[1] === MAX_COUNT && val[1]>=2).map(([v,i])=>v)
-            answer.push(...ans)
-        }
-        // console.log(Object.entries(cand).sort((a,b)=>b[1]-a[1]))
+    const newCourses = Array.from(ALL_COURSE).filter(([val,cnt])=>cnt !== 1).sort((a,b)=> b[1]-a[1])
+    for(let c of course){
+        const filteredCourses = newCourses.filter(([val,cnt])=>val.length === c)
+        const MAX_COUNT = Math.max(...filteredCourses.map(([val,cnt])=>cnt))
+        const myCourse = filteredCourses.filter(([val,cnt])=>cnt===MAX_COUNT)
+        answer.push(...myCourse.map(([val])=>val))
     }
-    // console.log(candidates)
-    answer.sort()
-    
-    return answer;
+    // 각 손님이 주문한 단품메뉴 조합에서 course를 순회하며 course 원소만큼 메뉴조합해야함
+    // 알파벳 오름차순 정렬
+    // 만들어진 각 메뉴조합마다 개수
+    return answer.sort();
 }
