@@ -1,48 +1,45 @@
 function solution(begin, target, words) {
-    var answer = 0;
-    const result = []
-    // target이 words안에 없을 경우
-    if (!words.includes(target)) return answer
-    const visited = Array.from({length:words.length},()=>false)
-
-    // target이 words안에 있을 경우
-    
-    const check = (word, nextWord)=>{
-        let letterCnt = 0
-        for(let idx=0;idx<word.length;idx++){
-            if(word[idx] !== nextWord[idx]){
-                letterCnt +=1
-            }
-        }
-        if(letterCnt<=1){
-            return true
-        }else{
-            return false
-        }
+    var answer = Number.MAX_SAFE_INTEGER;
+    // begin -> target
+    // target이 words에 없으면 변환 불가
+    if(!words.includes(target)){
+        return 0
     }
-    function dfs(word,cnt){
-        if (word === target) {
-            result.push(cnt)
+    // 있으면 변환 가능
+    
+    // begin에서 words에 있는 단어 중 한글자 차이나는 단어로 바꿀 수 있음
+    function canChange (words,currentWord){
+        return words.filter((word)=>{
+            const intersect = word.split('').filter((char,index)=> char === currentWord[index]).length
+            return intersect === word.length-1
+        })
+    }
+    
+    
+    // 이미 바꿨던 거로는 안바꿔야함
+    // target으로 변환하는 과정이 최소인 경우를 구해야함
+    function dfs(start,target,words,visited,depth){
+        if(start === target){
+            answer = Math.min(answer,depth)
             return
         }
-        for(let idx=0;idx<words.length;idx++){
-            if(!visited[idx] && check(word,words[idx])){
-                visited[idx] = true
-                dfs(words[idx],cnt+1)
-                visited[idx] = false
+        
+        const candidates = canChange(words,start)
+        
+        for(let candidate of candidates){
+            const index = words.indexOf(candidate)
+            if(!visited[index]){
+                visited[index] = true
+                dfs(candidate,target,words,visited,depth+1)
+                visited[index] = false
             }
+            
         }
     }
     
-    for(let idx=0;idx<words.length;idx++){
-        if(!visited[idx] && check(begin,words[idx])){
-            visited[idx] = true
-            dfs(words[idx],1)
-            visited[idx] = false
-        }
-    }
-    // console.log(visited)
-    // console.log(result)
-    answer = Math.min(...result)
+    const visited = Array.from({length:words.length},()=>false)
+    dfs(begin,target,words,visited,0)
+    
+    
     return answer;
 }
