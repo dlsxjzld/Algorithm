@@ -40,6 +40,7 @@ const bfs = () => {
   const queue = [[0, 0, 0]]; // x,y, broken(부숨 여부)
   let index = 0;
   visited[0][0][0] = 1;
+  visited[0][0][1] = 1;
 
   while (queue.length > index) {
     const [x, y, broken] = queue[index++];
@@ -51,28 +52,29 @@ const bfs = () => {
         continue;
       }
 
-      // 같은 상태에서 같은 곳을 온다면, 이전으로 다시 가면 안됨
+      if (broken) {
+        // 벽을 부수고 온 상태
 
-      if (graph[nx][ny] === 0) {
-        // 길이라면
-        if (visited[nx][ny][0] === 0 && broken === 0) {
-          // 벽을 부순 채로 온 거
-          visited[nx][ny][0] = visited[x][y][0] + 1;
-          queue.push([nx, ny, broken]);
-        }
-        if (visited[nx][ny][1] === 0 && broken === 1) {
+        // 다음 갈 곳이 길이라면
+        if (graph[nx][ny] === 0 && visited[nx][ny][1] === 0) {
           visited[nx][ny][1] = visited[x][y][1] + 1;
-          queue.push([nx, ny, broken]);
+          queue.push([nx, ny, 1]);
         }
-      } else if (graph[nx][ny] === 1 && broken === 0) {
-        // 벽이라면
-        if (visited[nx][ny][1] === 0) {
+        // 다음 갈 곳이 벽이라면 못 감
+      } else {
+        // 벽을 부수지 않고 온 상태
+
+        // 다음 갈 곳이 길이라면
+        if (graph[nx][ny] === 0 && visited[nx][ny][0] === 0) {
+          visited[nx][ny][0] = visited[x][y][0] + 1;
+          queue.push([nx, ny, 0]);
+        }
+        // 다음 갈 곳이 벽이라면
+        else if (graph[nx][ny] === 1 && visited[nx][ny][1] === 0) {
           visited[nx][ny][1] = visited[x][y][0] + 1;
           queue.push([nx, ny, 1]);
         }
       }
-      // 벽을 부순 상태
-      // 벽을 부수지 않은 상태
     }
   }
 };
