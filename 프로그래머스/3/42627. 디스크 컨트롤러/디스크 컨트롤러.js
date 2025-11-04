@@ -1,127 +1,112 @@
-class MinHeap {
-  queue = [];
-  constructor(compare) {
-    this.compare = compare;
+class Heap {
+  // 최소힙
+  constructor(compareFn = (a, b) => a - b) {
+    this.queue = [];
+    this.compareFn = compareFn;
   }
 
-  // pop + 힙 내리기
+  push(value) {
+    this.queue.push(value);
+
+    this.bubbleUp(this.size() - 1);
+  }
   pop() {
-    if (!this.queue.length) {
+    if (this.size() === 0) {
       return null;
     }
-
-    if (this.queue.length === 1) {
+    if (this.size() === 1) {
       return this.queue.pop();
     }
-
     const root = this.queue[0];
     const last = this.queue.pop();
-
     this.queue[0] = last;
-
-    let currentIndex = 0;
-    let leftIndex = currentIndex * 2 + 1;
-    let rightIndex = currentIndex * 2 + 2;
-
-    while (true) {
-      const current = this.queue[currentIndex];
-      const left = this.queue[leftIndex];
-      const right = this.queue[rightIndex];
-      let swap = null;
-
-      if (left && !this.compare(current, left)) {
-        swap = leftIndex;
-      }
-
-      if (right) {
-        if ((swap && !this.compare(left, right)) || (!swap && !this.compare(current, right))) {
-          swap = rightIndex;
-        }
-      }
-
-      if (swap === null) {
-        break;
-      }
-
-      this.queue[currentIndex] = this.queue[swap];
-      this.queue[swap] = current;
-      currentIndex = swap;
-      leftIndex = currentIndex * 2 + 1;
-      rightIndex = currentIndex * 2 + 2;
+    if (this.size() > 1) {
+      this.bubbleDown(0);
     }
 
     return root;
   }
-  push(val) {
-    this.queue.push(val);
-    if (this.queue.length === 1) {
-      return;
-    }
-    let currentIndex = this.queue.length - 1;
-    let parentIndex = Math.floor((currentIndex - 1) / 2);
 
-    while (currentIndex) {
-      const parent = this.queue[parentIndex];
-      const current = this.queue[currentIndex];
+  bubbleUp(index) {
+    // index를 비교해서 올려야함
+    while (index > 0) {
+      const parentIndex = Math.floor((index - 1) / 2);
 
-      if (!this.compare(parent, current)) {
-        this.queue[parentIndex] = current;
-        this.queue[currentIndex] = parent;
-        currentIndex = parentIndex;
-        parentIndex = Math.floor((currentIndex - 1) / 2);
-
-        if (currentIndex === 0) {
-          break;
-        }
+      // 자식 vs 부모
+      if (this.compareFn(this.queue[index], this.queue[parentIndex]) < 0) {
+        this.swap(index, parentIndex);
+        index = parentIndex;
       } else {
         break;
       }
     }
   }
-    
-  size(){
-      return this.queue.length
+
+  bubbleDown(index) {
+    let swap = index;
+
+    while (true) {
+      let left = index * 2 + 1;
+      let right = index * 2 + 2;
+
+      if (this.queue[left] && this.compareFn(this.queue[left], this.queue[swap]) < 0) {
+        swap = left;
+      }
+
+      if (this.queue[right] && this.compareFn(this.queue[right], this.queue[swap]) < 0) {
+        swap = right;
+      }
+
+      if (swap === index) {
+        break;
+      }
+      this.swap(swap, index);
+      index = swap;
+    }
   }
 
-  // 힙 내리기
+  swap(aIdx, bIdx) {
+    [this.queue[aIdx], this.queue[bIdx]] = [this.queue[bIdx], this.queue[aIdx]];
+  }
+
+  size() {
+    return this.queue.length;
+  }
 }
 
+
 function solution(jobs) {
-    var answer = 0;
-    const count = jobs.length
+    const newJobs = jobs.map(([s,l],i)=>[i,s,l])
+    const count = newJobs.length
+    newJobs.sort((a,b)=>a[1]-b[1])
     
-    // 작업의 소요시간이 짧은 것, 
-    // 작업의 요청 시각이 빠른 것, 
-    // 작업의 번호가 작은 것
+    const compareFn = (a,b)=> {
+      return a[2]-b[2] || a[1]-b[1] || a[0]-b[0]
+    }
+    const minHeap = new Heap(compareFn)
     
-    const compareFn = (cur,next)=>{
-        return cur[1] < next[1]
-    }
-    const minHeap = new MinHeap(compareFn)
+    let time = 0
+    let total = 0
     
-    jobs.sort((a,b) => a[0]-b[0]);
-  
-  let time = 0;
-  let complete = 0;
-  let total = 0;
-  
-  while(jobs.length || minHeap.size()) {
-    while(jobs.length) {
-      if(jobs[0][0] === time) {
-        minHeap.push(jobs.shift());
-      } else break;
+    while(newJobs.length>0 || minHeap.size() > 0){
+        while(newJobs.length > 0){
+            if(newJobs[0][1] <= time){
+                minHeap.push(newJobs.shift())
+            }else{
+                break
+            }
+        }
+        
+        if(minHeap.size() > 0){
+            const [i,s,l] = minHeap.pop()
+            time += l
+            total += time -s
+        }else if(newJobs.length > 0 && minHeap.size() === 0){
+            time = newJobs[0][1]
+        }
+        
     }
-      
-
-    if(minHeap.size() && time >= complete) {
-      const task = minHeap.pop();
-
-      complete = task[1] + time;
-      total += complete - task[0];
-    }
-    time++;
-  }
-
-  return Math.floor(total / count)
-
+    
+    var answer = Math.floor(total/count)
+    return answer;
 }
