@@ -1,28 +1,54 @@
 function solution(tickets) {
-    var answer = [];
+    var answer = null
     const graph = {}
-    for(let [a,b] of tickets){
-        if(!graph[a]){
-            graph[a] = []
-        }
-        graph[a].push(b)
-        graph[a].sort()
+    const visited = {}
+    
+    const getKey = (s,e)=>{
+        return `${s}-${e}`
     }
-    const route = []
     
-    const stack = ["ICN"]
-    
-    while(stack.length >0){
-        const current = stack[stack.length-1]
+    for(let [s,e] of tickets){
+        if(!graph[s]){
+            graph[s] = []
+            visited[s] = []
+        }
+        graph[s].push(e)
+        graph[s].sort()
         
-        if(graph[current] && graph[current].length>0){
-            const next = graph[current].shift()
-            stack.push(next)
-        }else{
-            route.push(stack.pop())
+        visited[s].push(false)
+    }
+    const checkAllVisited = ()=>{
+        return Object.values(visited).flat().every((val)=>val === true)
+    }
+    
+    
+    const dfs = (start,path)=>{
+        if(checkAllVisited()){
+            if(!answer){
+                answer = [...path]
+            }
+            return
+        }
+
+        
+        if(!graph[start]){
+            return
+        }
+        
+        for(let i=0; i<graph[start].length;i+=1){
+            const next = graph[start][i]
+            if(!visited[start][i]){
+                visited[start][i] = true
+                path.push(next)
+                dfs(next,path)
+                path.pop()
+                visited[start][i] = false
+                
+            }
         }
     }
     
-    answer = route.reverse()
+    dfs('ICN',['ICN'])
+    
     return answer;
 }
