@@ -1,60 +1,64 @@
 function solution(land) {
     var answer = 0;
-    // 각 열에 얼만큼 포함되었는지 계산하기 -> 각 열은 배열 형태
-    // 2차원 배열
-    // 1 -> [8]
-    // 2 -> [8]
-    // ...
-    // 7 -> [7,2]
-    const row = land.length
-    const col = land[0].length
-    const oils = Array.from({length:col},()=>[])
+    const n = land.length
+    const m = land[0].length
     
-    // 석유 시추는 한번만 한다
-    const visitedLand = Array.from({length:row},()=> Array.from({length:col},()=>false))
+    // 열은 배열 형태
+    const cols = Array.from({length:m},()=>[])
     
-    const move = [[0,1],[0,-1],[1,0],[-1,0]]
-    function bfs([sx,sy]){
-        const oilFounded = new Set()
-        oilFounded.add(sy)
-        
+    // 이미 방문한 곳인지 확인
+    const visited = Array.from({length:n},()=>Array.from({length:m},()=>false))
+    
+    // 동 서 남 북
+    const move = [[0,1],[0,-1],[1,0],[-1,0]] 
+    
+    // 땅 속에서 석유 시추 덩어리 찾기
+    const bfs = (sx,sy)=>{
         const queue = [[sx,sy]]
-        let index =0
-        let cnt = 1
-        while(queue.length>index){
+        let index = 0
+        let cnt= 1
+        const colsForOil = new Set([sy])
+        
+        while(queue.length >index){
             const [x,y] = queue[index++]
-            for(let [dx,dy] of move){
-                const nx = x+dx
-                const ny = y+dy
-                if(nx<0 || ny<0 || nx>=row || ny >=col || !land[nx][ny] || visitedLand[nx][ny]){
+            
+            for(let i=0;i<4;i+=1){
+                const [dx,dy] = move[i]
+                const [nx,ny] = [x+dx,y+dy]
+                
+                if(nx <0 || ny<0 || nx>=n || ny>=m || visited[nx][ny] || land[nx][ny] === 0){
                     continue
                 }
-                cnt +=1
+                visited[nx][ny] = true
                 queue.push([nx,ny])
-                visitedLand[nx][ny] = true
-                oilFounded.add(ny)
+                cnt += 1
+                colsForOil.add(ny)
             }
         }
-
-        Array.from(oilFounded).forEach((colNum)=>{
-            oils[colNum].push(cnt)
-        })
         
+        
+
+                
+        for(let col of colsForOil){
+            cols[col].push(cnt)
+        }
     }
-    
-    for(let i=0;i<row;i+=1){
-        for(let j=0;j<col;j+=1){
-            if(land[i][j] && !visitedLand[i][j]){
-                visitedLand[i][j] = true
-                bfs([i,j])
+    for(let i=0;i<n;i+=1){
+        for(let j=0;j<m;j+=1){
+            // 0이면 빈 땅을, 1이면 석유
+            if(!visited[i][j] && land[i][j]){
+                visited[i][j] = true
+                bfs(i,j)
             }
         }
     }
     
-
-
+    // 각 덩어리의 크기를 구하고
+    // 열의 정보들 담아서, 이 열들에 덩어리의 크기 할당
     
-    answer = Math.max(...oils.map((oil)=>oil.reduce((prev,acc)=>acc+prev,0)))
+    
+    answer = Math.max(...cols.map((col)=>col.reduce((a,b)=>a+b,0)).flat())
+    
     
     return answer;
 }
