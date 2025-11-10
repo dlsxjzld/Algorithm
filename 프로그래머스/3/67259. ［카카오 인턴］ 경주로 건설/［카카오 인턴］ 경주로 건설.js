@@ -1,38 +1,77 @@
-const MAX = Number.MAX_SAFE_INTEGER
 function solution(board) {
-    var answer = 0;
-    const dirs = [[0,1],[1,0],[0,-1],[-1,0]] // 동 남 서 북
+    var answer = Number.MAX_SAFE_INTEGER
+    // 최소 비용 -> bfs
+    const n = board.length
     
-    const distance = Array.from({length:board.length},
-                                ()=>Array.from({length:board.length},
-                                ()=>Array.from({length:dirs.length},
-                                ()=>MAX)))
-    function bfs(){
-        // x, y, 현재 dir, cost
-        const queue = [[0,0,0,0],[0,0,1,0]] // 초기 방향은 동, 남
+    // 벽(1)은 못 감 
+    // 빈 칸(0)은 감
+    
+    // 직선 도로와 코너를 판단 -> 이전에 온 방향과 다음 방향이 필요함
+    const checkTypeOfBuild = (prevMoveIndex,nextMoveIndex) =>{
+        return prevMoveIndex === nextMoveIndex ? 'line' : 'corner'
+    }
+    // 직선 도로 100 
+    // 코너 500
+    
+    // 도로 연결 시 (칸 + 칸 연결)
+    // 코너 만들면 (+ 코너 1개 + 직선 1개)
+    // 직선이면 (+ 직선 1개)
+    
+    // 동 서 남 북
+    const move = [[0,1],[0,-1],[1,0],[-1,0]] 
+    const visited = Array.from({length:n},()=>Array.from({length:n},()=>Array.from({length:4},()=>Number.MAX_SAFE_INTEGER)))
+    
+    
+    const bfs = ()=>{
+        const queue = [] // x,y,cost, prevMove
+        if(board[0][1] === 0){
+            visited[0][1][0] = 100
+            queue.push([0,1,100,0])
+        }
         
-        while(queue.length>0){
-            const [x,y,currDir,cost] = queue.shift()
-            for(let nextDir=0; nextDir<4;nextDir++){
-                // 다음 x, 다음 y
-                const [nx,ny] = [x+dirs[nextDir][0] , y+dirs[nextDir][1]] 
+        if(board[1][0] === 0){
+            visited[1][0][2] = 100
+            queue.push([1,0,100,2])
+        }
+        
+        let index = 0
+        // 단순 최단 거리는 아니다. 도달할 수 있는 방법은 많지만 최소 비용
+        while(queue.length>index){
+            const [x,y,cost,prevMove] = queue[index++]
+            
+            if(x === n-1 && y === n-1){
+                continue
+            }
+            
+            for(let i=0;i<4;i+=1){
+                const [dx,dy] = move[i]
+                const nx = x+dx
+                const ny = y+dy
                 
-                // board 범위 내에서, 길인 경우만
-                if(nx<0 || ny<0 || nx>=board.length || ny>=board.length || board[nx][ny] === 1){
+                const buildType = checkTypeOfBuild(prevMove,i)
+                const nextCost = buildType === 'line' ? 100 : 600
+                
+                if(nx<0 || ny<0 || nx>=n || ny >=n || board[nx][ny]){
                     continue
                 }
+                // 초기 시작점에서 출발할 때는 무조건 직선만 만들어짐
+                // 이전 방향이 없어서 예외처리하기
                 
-                const newCost = cost + (nextDir === currDir ? 100 : 600)
-                if(newCost < distance[nx][ny][nextDir] ){
-                    distance[nx][ny][nextDir] = newCost
-                    queue.push([nx,ny,nextDir,newCost])
-                }
+               if(visited[nx][ny][i] > nextCost + cost) {
+                   queue.push([nx,ny,cost+nextCost,i])
+                   visited[nx][ny][i] = nextCost + cost
+               }
+               
+               
+                
                 
             }
+            
         }
     }
     bfs()
 
-    answer = Math.min(...distance[board.length-1][board.length-1])
+    answer = Math.min(...visited[n-1][n-1],answer)
+    
     return answer;
 }
