@@ -1,26 +1,37 @@
-function pushNumber (nx,ny,graph,num){
-    graph[nx][ny] = num
-}
-
 function solution(n) {
     var answer = [];
-    const graph = Array.from({length:n},(_,idx)=>Array.from({length:idx+1},()=>0))
-    // console.log(graph)
-    const direction = [[1,0],[0,1],[-1,-1]] // 아래, 오른쪽, 왼쪽위
+    // 달팽이의 움직임 주기 3번
+    const move = [[1,0],[0,1],[-1,-1]]
     
-    let dir = -1
-    let [x,y] = [-1,0]
-    let num = 0
-    for(let start=n;start>0;start--){
-        dir = (dir+1)%3 // 방향 전환
-        const [nx,ny] = direction[dir]
-        for(let repeatTime=0;repeatTime<start;repeatTime++){
-            x += nx
-            y += ny
-            num +=1
-            pushNumber(x,y,graph,num)
+    // 삼각형
+    const triangle = Array.from({length:n},(_,i)=>Array.from({length:i+1},()=>0))
+
+    
+    
+    // 앞으로 이동할 값들
+    const nextMoves = Array.from({length:n},(_,i)=>n-i)
+  
+    // 시작 지점은 0,-1
+    let x = -1
+    let y = 0
+    
+    // 시작 값은 0
+    let cur = 0
+
+    for(let i=0;i<n;i+=1){
+        const nextMove = nextMoves[i]
+
+        const nextDir = i%3
+        const [dx,dy] = move[nextDir]
+        for(let j=0;j<nextMove;j+=1){
+
+            x += dx
+            y += dy
+            cur+=1
+
+            triangle[x][y] = cur
         }
     }
-    answer = graph.flatMap((row)=>row)
+    answer = triangle.flat()
     return answer;
 }
