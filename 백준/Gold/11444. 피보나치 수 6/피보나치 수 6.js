@@ -1,43 +1,25 @@
-const input = require("fs")
-  .readFileSync("/dev/stdin")
-  .toString()
-  .trim()
-  .split("\n")
+const input = require('fs').readFileSync('/dev/stdin').toString().trim().split('\n');
 
-const n = BigInt(input[0])
+const n = BigInt(input[0]);
 
-console.log(pow(n)[1][0].toString())
+const mod = 1_000_000_007n;
 
-function pow(n) {
-  if (n == 1n) {
-    return [
-      [1n, 1n],
-      [1n, 0n],
-    ]
-  } else if (n % 2n == 0n) {
-    const half = n / 2n
-    const half_pow = pow(half)
-    return mult(half_pow, half_pow)
-  } else {
-    const half = (n - 1n) / 2n
-    const half_pow = pow(half)
-    return mult(mult(half_pow, half_pow), [
-      [1n, 1n],
-      [1n, 0n],
-    ])
+let memo = new Map();
+
+const fibo = (n) => {
+  if (n === 0n) return 0n;
+  if (n === 1n) return 1n;
+  if (n === 2n) return 1n;
+  if (memo[n] > 0n) return memo[n];
+
+  if (n % 2n === 0n) {
+    memo[n] = (fibo(n / 2n) * (fibo(n / 2n + 1n) + fibo(n / 2n - 1n))) % mod;
   }
-}
-
-function mult(A, B) {
-  const ret = [
-    [0n, 0n],
-    [0n, 0n],
-  ]
-  for (let i = 0; i < 2; i++) {
-    for (let j = 0; j < 2; j++) {
-      for (let k = 0; k < 2; k++)
-        ret[i][j] = (ret[i][j] + A[i][k] * B[k][j]) % 1000000007n
-    }
+  if (n % 2n === 1n) {
+    memo[n] = (fibo((n + 1n) / 2n) ** 2n + fibo((n - 1n) / 2n) ** 2n) % mod;
   }
-  return ret
-}
+  return memo[n]
+};
+
+const result = fibo(n);
+console.log(result.toString().replace('n', ''));
